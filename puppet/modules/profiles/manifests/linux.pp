@@ -34,22 +34,22 @@ class profiles::linux inherits profiles::common {
 
 
   # General system settings
-  Exec { 'path' => $exec_path }
+  Exec { path => $exec_path }
 
   class { '::selinux':
-    'mode' => 'disabled'
+    mode => 'disabled'
   }
 
 
   # Set up repositories
   class { '::yumrepo':
-    'timeout' => $repo_timeout
+    timeout => $repo_timeout
   }
 
 
   # Install and configure vital packages
   package { 'wget':
-    'ensure' => present
+    ensure => present
   }
 
   class { '::ntp': }
