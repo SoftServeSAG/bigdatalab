@@ -1,0 +1,10 @@
+---
+profiles::linux::supported_oss:
+  CentOS: 
+    - '7.0'
+profiles::linux::repo_timeout: 300
+profiles::linux::exec_path:
+  - /bin
+  - /sbin
+  - /usr/bin
+  - /usr/sbin
