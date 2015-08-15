@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+#^syntax detection
+
+forge "https://forgeapi.puppetlabs.com"
+
+# Local modules
+mod 'softservesag/profiles', :path => 'local_modules/profiles'
+mod 'softservesag/jdk_oracle', :path => 'local_modules/jdk_oracle'
