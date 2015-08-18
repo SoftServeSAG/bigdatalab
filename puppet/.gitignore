@@ -1,5 +1,6 @@
 .tmp/
 .librarian/
-modules/
 .vagrant/
 log/
+modules/
+vendor/

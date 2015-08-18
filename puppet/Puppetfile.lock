@@ -3,7 +3,7 @@ FORGE
   specs:
     puppetlabs-ntp (4.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
-    puppetlabs-stdlib (4.7.0)
+    puppetlabs-stdlib (4.8.0)
     spiette-selinux (0.5.4)
 
 PATH
