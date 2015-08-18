@@ -1,6 +1,5 @@
 require 'rake'
 require 'rspec/core/rake_task'
-require 'hiera'
 
 desc "Run all RSpec code examples"
 RSpec::Core::RakeTask.new(:rspec) do |t|
@@ -24,6 +23,7 @@ task :default => :rspec
 begin
   if Gem::Specification::find_by_name('puppet-lint')
     require 'puppet-lint/tasks/puppet-lint'
+    PuppetLint.configuration.pattern = "local_modules/**/*.pp"
     PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "vendor/**/*.pp"]
     task :default => [:rspec, :lint]
   end
