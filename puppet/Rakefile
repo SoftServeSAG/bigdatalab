@@ -1,4 +1,6 @@
 require 'rake'
+require 'rubygems'
+require 'bundler'
 require 'rspec/core/rake_task'
 
 desc "Run all RSpec code examples"

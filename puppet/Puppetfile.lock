@@ -20,7 +20,14 @@ PATH
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
       spiette-selinux (>= 0.5)
 
+PATH
+  remote: local_modules/roles
+  specs:
+    softservesag-roles (0.1.0)
+      softservesag-profiles (= 0.1.0)
+
 DEPENDENCIES
   softservesag-jdk_oracle (>= 0)
   softservesag-profiles (>= 0)
+  softservesag-roles (>= 0)
 

@@ -1,0 +1,22 @@
+{
+  "name": "softservesag/roles",
+  "version": "0.1.0",
+  "author": "SoftServe SAG",
+  "license": "Apache-2.0",
+  "summary": "Defines server roles",
+  "source": "https://github.com/SoftServeSAG/bigdatalab/puppet/local_modules/roles",
+  "project_page": "https://github.com/SoftServeSAG/bigdatalab",
+  "issues_url": "https://github.com/SoftServeSAG/bigdatalab/issues",
+  "tags": ["SoftServe", "SAG", "BigDataLab", "roles"],
+  "operatingsystem_support": [
+    {
+      "operatingsystem":"CentOS",
+      "operatingsystemrelease": [
+        "7.0"
+      ]
+    }
+  ],
+  "dependencies": [
+    { "name": "softservesag/profiles", "version_requirement": "0.1.0"}
+  ]
+}
