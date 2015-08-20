@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "SoftServe SAG",
   "license": "Apache-2.0",
-  "summary": "INstalls and configures Oracle JDK",
+  "summary": "Installs and configures Oracle JDK",
   "source": "https://github.com/SoftServeSAG/bigdatalab/puppet/local_modules/jdk_oracle",
   "project_page": "https://github.com/SoftServeSAG/bigdatalab",
   "issues_url": "https://github.com/SoftServeSAG/bigdatalab/issues",

@@ -12,7 +12,8 @@ hosts.each do |host|
   on host, install_puppet
 
   # Copy hiera data
-  scp_to(host, hiera_root, '/etc/puppetlabs')
+  scp_to(host, File.join(hiera_root, 'hiera.yaml'), '/etc/puppetlabs/code')
+  scp_to(host, File.join(hiera_root, 'hieradata'), '/etc/puppetlabs/code')
 end
 
 RSpec.configure do |c|
@@ -30,8 +31,5 @@ RSpec.configure do |c|
       puppet_module_install(:source => module_path, :module_name => m)
     end
 
-    #hosts.each do |host|
-      #on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
-    #end
   end
 end

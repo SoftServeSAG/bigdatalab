@@ -8,8 +8,9 @@ RSpec.configure do |c|
   c.environmentpath = File.join(Dir.pwd, 'spec')
   c.hiera_config = File.join(Dir.pwd, 'spec/hiera/hiera.yaml')
   c.default_facts = {
-    :operatingsystem        => 'CentOS', 
-    :operatingsystemrelease => '7.0', 
-    :osfamily               => 'RedHat'
+    :operatingsystem           => 'CentOS', 
+    :operatingsystemrelease    => '7.0',
+    :operatingsystemmajrelease => '7', 
+    :osfamily                  => 'RedHat'
   }
 end
