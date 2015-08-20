@@ -37,7 +37,7 @@ class profiles::linux (
 
 
   # Check OS version
-  $os_version = $::operatingsystemrelease
+  $os_version = $::operatingsystemmajrelease
   $supported_os_versions = $supported_oss[$os]
   validate_array($supported_os_versions)
   
@@ -48,16 +48,21 @@ class profiles::linux (
 
   # General system settings
   Exec { path => $exec_path }
+  Yumrepo { timeout => $repo_timeout }
 
   class { '::selinux':
     mode => 'disabled'
   }
 
 
-  # Set up repositories
-  yumrepo { 'yumrepo':
-    timeout => $repo_timeout
-  }
+  # Set up puppetlabs repository
+  yumrepo { 'puppetlabs':
+    baseurl => "http://yum.puppetlabs.com/el/${$os_version}/products/x86_64/",
+    descr => "PuppetLabs official yum repository",
+    enabled => 1,
+    gpgcheck => 0,
+    gpgkey => "http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs"
+ }
 
 
   # Install and configure vital packages
