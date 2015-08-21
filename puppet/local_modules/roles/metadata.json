@@ -1,13 +1,13 @@
 {
-  "name": "softservesag/jdk_oracle",
+  "name": "softservesag/roles",
   "version": "0.1.0",
   "author": "SoftServe SAG",
   "license": "Apache-2.0",
-  "summary": "Installs and configures Oracle JDK",
-  "source": "https://github.com/SoftServeSAG/bigdatalab/puppet/local_modules/jdk_oracle",
+  "summary": "Defines server roles",
+  "source": "https://github.com/SoftServeSAG/bigdatalab/puppet/local_modules/roles",
   "project_page": "https://github.com/SoftServeSAG/bigdatalab",
   "issues_url": "https://github.com/SoftServeSAG/bigdatalab/issues",
-  "tags": ["SoftServe", "SAG", "BigDataLab", "jdk"],
+  "tags": ["SoftServe", "SAG", "BigDataLab", "roles"],
   "operatingsystem_support": [
     {
       "operatingsystem":"CentOS",
@@ -17,6 +17,6 @@
     }
   ],
   "dependencies": [
-    { "name": "puppetlabs/stdlib", "version_requirement": ">= 3.2.0 <5.0.0" }
+    { "name": "softservesag/profiles", "version_requirement": "0.1.0"}
   ]
 }

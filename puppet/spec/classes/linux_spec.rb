@@ -12,7 +12,8 @@ describe 'profiles::linux' do
 
   context "when running on unsupported OS version" do
     let(:facts) { {
-      :operatingsystemrelease => '6.5'
+      :operatingsystemmajrelease => '6',
+      :operatingsystemrelease    => '6.5'
     } }
     it { should_not compile }
   end
@@ -37,8 +38,8 @@ describe 'profiles::linux' do
     it { should contain_class('ntp') }
   end
 
-  context "to enable common package repositories" do
-    it { should contain_yumrepo('yumrepo').with_timeout(300) }
+  context "to enable puppetlabs package repository" do
+    it { should contain_yumrepo('puppetlabs').with_timeout(300) }
   end
 
   at_exit { RSpec::Puppet::Coverage.report! }
