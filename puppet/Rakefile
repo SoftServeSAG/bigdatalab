@@ -35,9 +35,15 @@ end
 desc "Prepare module dependencies"
 task :prep do
   sh "librarian-puppet install"
+  sh "mkdir spec/fixtures/modules"
+  MODULES = Dir.entries('modules') - ['.', '..']
+  MODULES.each do |m|
+    sh "ln -s ../../../modules/#{m} spec/fixtures/modules/#{m}"
+  end
 end
 
 desc "Clean module dependencies"
 task :clean do
+  sh "rm -fR spec/fixtures/modules"
   sh "rm -fR modules"
 end
