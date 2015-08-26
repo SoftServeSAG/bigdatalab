@@ -57,12 +57,12 @@ class profiles::linux (
 
   # Set up puppetlabs repository
   yumrepo { 'puppetlabs':
-    baseurl => "http://yum.puppetlabs.com/el/${$os_version}/products/x86_64/",
-    descr => "PuppetLabs official yum repository",
-    enabled => 1,
+    baseurl  => "http://yum.puppetlabs.com/el/${$os_version}/products/x86_64/",
+    descr    => 'PuppetLabs official yum repository',
+    enabled  => 1,
     gpgcheck => 0,
-    gpgkey => "http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs"
- }
+    gpgkey   => 'http://yum.puppetlabs.com/RPM-GPG-KEY-puppetlabs'
+  }
 
 
   # Install and configure vital packages
