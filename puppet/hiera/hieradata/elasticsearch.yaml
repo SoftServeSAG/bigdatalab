@@ -1,0 +1,40 @@
+profiles::elastcisearch:
+  elastcisearch:
+    package_url: 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.1.noarch.rpm'
+    config:
+      cluster::routing::allocation:
+        cluster_concurrent_rebalance: 2
+        node_concurrent_recoveries: 2
+        node_initial_primaries_recoveries: 4
+        disk:
+          threshold_enabled: true
+          watermark:
+            low: 0.85
+            high: 0.9
+      index:
+        number_of_replicas: 1
+        number_of_shards: 1
+      bootstrap::mlockall: true
+      gateway:
+        recover_after_time: '5m'
+        type: 'local'
+      indices:
+        fielddata::cache::size: '50%'
+        cache.filter.size: '10%'
+        recovery:
+          concurrent_streams: 3
+          max_bytes_per_sec: '40mb'
+      action::destructive_requires_name: false
+      threadpool::search::queue_size: 3000
+    init_defaults:
+      MAX_OPEN_FILES: 65535
+      MAX_LOCKED_MEMORY: 'infinity'
+    datadir: '/var/lib/elasticsearch'
+    instance: 'es-01'
+    template:
+      apache-logs:
+        file: 'puppet:///modules/profiles/templates/elasticsearch-template.json'
+    plugin:
+      mobz/elasticsearch-head:
+        module_dir: 'head'
+    	  instances: 'es-01'
