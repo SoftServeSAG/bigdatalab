@@ -3,7 +3,7 @@ FORGE
   specs:
     ceritsc-yum (0.9.6)
       puppetlabs-stdlib (>= 4.0.0)
-    elasticsearch-elasticsearch (0.9.8)
+    elasticsearch-elasticsearch (0.9.9)
       ceritsc-yum (< 1.0.0, >= 0.9.6)
       puppetlabs-apt (< 2.0.0, >= 1.4.0)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
