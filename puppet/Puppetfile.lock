@@ -1,6 +1,14 @@
 FORGE
   remote: https://forgeapi.puppetlabs.com
   specs:
+    ceritsc-yum (0.9.6)
+      puppetlabs-stdlib (>= 4.0.0)
+    elasticsearch-elasticsearch (0.9.9)
+      ceritsc-yum (< 1.0.0, >= 0.9.6)
+      puppetlabs-apt (< 2.0.0, >= 1.4.0)
+      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
+    puppetlabs-apt (1.8.0)
+      puppetlabs-stdlib (>= 2.2.1)
     puppetlabs-ntp (4.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
     puppetlabs-stdlib (4.8.0)
@@ -16,8 +24,10 @@ PATH
   remote: local_modules/profiles
   specs:
     softservesag-profiles (0.1.0)
+      elasticsearch-elasticsearch (>= 0.9.8)
       puppetlabs-ntp (>= 4.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
+      softservesag-jdk_oracle (>= 0)
       spiette-selinux (>= 0.5)
 
 PATH
