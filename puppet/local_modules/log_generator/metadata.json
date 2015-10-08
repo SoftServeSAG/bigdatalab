@@ -1,0 +1,22 @@
+{
+  "name": "softservesag/log_generator",
+  "version": "0.1.0",
+  "author": "SoftServe SAG",
+  "license": "Apache-2.0",
+  "summary": "Installs configures and runs log generators",
+  "source": "https://github.com/SoftServeSAG/bigdatalab/puppet/local_modules/log_generator",
+  "project_page": "https://github.com/SoftServeSAG/bigdatalab",
+  "issues_url": "https://github.com/SoftServeSAG/bigdatalab/issues",
+  "tags": ["SoftServe", "SAG", "BigDataLab", "logs", "log_generator"],
+  "operatingsystem_support": [
+    {
+      "operatingsystem":"CentOS",
+      "operatingsystemrelease": [
+        "7.0"
+      ]
+    }
+  ],
+  "dependencies": [
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 3.2.0 <5.0.0" }
+  ]
+}
