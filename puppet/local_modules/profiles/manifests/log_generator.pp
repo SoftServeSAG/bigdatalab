@@ -2,6 +2,10 @@
 # Apache logs generator profile
 #
 
-class profiles::log_generator inherits profiles::linux {
+class profiles::log_generator {
+
+  require profiles::linux
+
+  include ::log_generator
 
 }
