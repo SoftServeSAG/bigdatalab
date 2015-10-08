@@ -21,6 +21,7 @@
     { "name": "puppetlabs/ntp", "version_requirement": ">= 4.1.0" },
     { "name": "spiette/selinux", "version_requirement": ">= 0.5" },
     { "name": "softservesag/jdk_oracle" },
-    { "name": "softservesag/log_generator" }
+    { "name": "softservesag/log_generator" },
+    { "name": "elasticsearch/elasticsearch", "version_requirement": ">=0.9.8" }
   ]
 }
