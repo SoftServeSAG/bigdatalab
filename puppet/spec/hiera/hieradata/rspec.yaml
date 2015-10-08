@@ -8,3 +8,5 @@ profiles::linux::exec_path:
   - /sbin
   - /usr/bin
   - /usr/sbin
+profiles::elasticsearch::cluster_name: 'bdl'
+
