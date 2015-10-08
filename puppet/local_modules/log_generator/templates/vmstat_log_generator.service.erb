@@ -1,0 +1,18 @@
+[Unit]
+Description=VMstat log generator
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+User=log_generator
+Group=log_generator
+WorkingDirectory=<%= @install_dir %>
+ExecStart=/bin/bash <%= @install_dir %>/vmstat_log_generator_tcp.sh <%= @flume_agent_host %> <%= @flume_agent_port %>
+
+# Give a reasonable amount of time for the server to start up/shut down
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
