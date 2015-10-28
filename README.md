@@ -1,13 +1,41 @@
-# bigdatalab
-[ ![Codeship Status for SoftServeSAG/bigdatalab](https://codeship.com/projects/6d814050-2d1d-0133-558b-16954c8f6a18/status?branch=develop)](https://codeship.com/projects/98767)
-
-## How to test
+1. Run:
 
 ```
-cd puppet
-bundle install
-bundle exec rake prep
-bundle exec rake rspec:classes
-bundle exec rake rspec:acceptance
-bundle exec rake clean
+sudo ./yum-install.sh
+./ruby-install.sh
+./terraform-install.sh
+source $HOME/.bashrc
+```
+
+2. Copy puppet/hiera/hieradata/common.yaml-[small|medium|large] to common.yaml.
+   Update common.yaml, if needed.
+
+3. Copy main.tf-[small|medium|large] to main.tf.
+
+4. Prepare .pem file to be used for SSH connections.
+
+5. Copy terraform.tfvars.stub to terraform.tfvars.  Update terraform.tfvars
+   with actual values.  You may also override other variables from
+   variables.tf.
+
+6. To create instances, run:
+
+```
+terraform apply
+```
+
+Note: If "Error launching source instance: InvalidParameterValue: Value () for
+parameter groupId is invalid. The value cannot be empty" error appears, just
+restart the command.
+
+7. To connect to any instance:
+
+```
+ssh -i <your .pem file> centos@<IP address>
+```
+
+8. To destroy instances, run:
+
+```
+terraform destroy
 ```

@@ -2,7 +2,7 @@
 :backends:
   - yaml
 :yaml:
-  :datadir: /etc/puppetlabs/code/hieradata
+  :datadir: "%{settings::yamldir}/hieradata"
 :hierarchy:
   - "%{::clientcert}"
   - common

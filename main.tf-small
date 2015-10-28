@@ -1,0 +1,110 @@
+provider "aws" {
+  access_key = "${var.access_key}"
+  secret_key = "${var.secret_key}"
+  region = "${var.region}"
+}
+
+resource "aws_security_group" "security_group" {
+  name = "${var.security_group}"
+
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_key_pair" "key" {
+  key_name = "${var.key_name}" 
+  public_key = "${var.public_key}"
+}
+
+resource "aws_instance" "node_log_generator" {
+  ami = "${lookup(var.amis, var.os_version)}"
+  instance_type = "${var.instance_type}"
+  security_groups = ["${var.security_group}"]
+  key_name = "${var.key_name}"
+  
+  tags = {
+    Name = "bigdatalab-log_generator"
+  }
+
+  connection {
+    type = "ssh"
+    user = "centos"
+    key_file = "${var.key_file}"
+  }
+
+  provisioner "file" {
+    source = "puppet"
+    destination = "${var.puppet_path}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum -y install yum-plugin-fastestmirror",
+      "sudo yum -y update",
+      "sudo yum -y remove java-*-openjdk",
+      "sudo rpm -U https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm",
+      "sudo yum -y install puppet-agent",
+      "sudo ln -sf /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet",
+      "cd ${var.puppet_path}/puppet",
+      "sudo puppet apply --modulepath modules --hiera_config=hiera/hiera.yaml --yamldir hiera manifests/log_generator_flume.pp"
+    ]
+  }
+
+  count = 1
+}
+
+resource "aws_instance" "node_elasticsearch" {
+  ami = "${lookup(var.amis, var.os_version)}"
+  instance_type = "${var.instance_type}"
+  security_groups = ["${var.security_group}"]
+  key_name = "${var.key_name}"
+
+  tags = {
+    Name = "bigdatalab-elasticsearch"
+  }
+
+  connection {
+    type = "ssh"
+    user = "centos"
+    key_file = "${var.key_file}"
+  }
+
+  provisioner "file" {
+    source = "puppet"
+    destination = "${var.puppet_path}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum -y install yum-plugin-fastestmirror",
+      "sudo yum -y update",
+      "sudo yum -y remove java-*-openjdk",
+      "sudo rpm -U https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm",
+      "sudo yum -y install puppet-agent",
+      "sudo ln -sf /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet",
+      "cd ${var.puppet_path}/puppet",
+      "sudo puppet apply --modulepath modules --hiera_config=hiera/hiera.yaml --yamldir hiera manifests/elasticsearch_kibana.pp"
+    ]
+  }
+
+  count = 1
+}
+
+output "public_ip_node_log_generator" {
+  value = "${aws_instance.node_log_generator.public_ip}"
+}
+
+output "public_ip_node_elasticsearch" {
+  value = "${aws_instance.node_elasticsearch.public_ip}"
+}
