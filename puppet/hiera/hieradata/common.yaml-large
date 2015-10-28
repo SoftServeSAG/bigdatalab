@@ -1,6 +1,7 @@
 ---
 profiles::linux::supported_oss:
-  CentOS: 
+  CentOS:
+    - '6' 
     - '7'
 profiles::linux::repo_timeout: 300
 profiles::linux::exec_path:
@@ -9,3 +10,4 @@ profiles::linux::exec_path:
   - /usr/bin
   - /usr/sbin
 profiles::elasticsearch::cluster_name: 'bdl'
+profiles::elasticsearch::num_nodes: 2
