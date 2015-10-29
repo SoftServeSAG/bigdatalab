@@ -39,7 +39,7 @@ resource "aws_instance" "node_log_generator" {
 
   connection {
     type = "ssh"
-    user = "centos"
+    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
     key_file = "${var.key_file}"
   }
 
@@ -76,13 +76,20 @@ resource "aws_instance" "node_flume" {
 
   connection {
     type = "ssh"
-    user = "centos"
+    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
     key_file = "${var.key_file}"
   }
 
   provisioner "file" {
     source = "puppet"
     destination = "${var.puppet_path}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "touch /tmp/elasticsearch_nodes",
+      "printf '${join("\n", aws_instance.node_elasticsearch.*.public_ip)}\n' >> /tmp/elasticsearch_nodes"
+    ]
   }
 
   provisioner "remote-exec" {
@@ -113,7 +120,7 @@ resource "aws_instance" "node_elasticsearch" {
 
   connection {
     type = "ssh"
-    user = "centos"
+    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
     key_file = "${var.key_file}"
   }
 
@@ -150,7 +157,7 @@ resource "aws_instance" "node_kibana" {
 
   connection {
     type = "ssh"
-    user = "centos"
+    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
     key_file = "${var.key_file}"
   }
 
@@ -175,12 +182,27 @@ resource "aws_instance" "node_kibana" {
   count = 1
 }
 
+resource "null_resource" "null" {
+  depends_on = ["aws_instance.node_log_generator", "aws_instance.node_flume", "aws_instance.node_elasticsearch", "aws_instance.node_kibana"]
+
+  provisioner "local-exec" {
+    command = <<EOF
+rm nodes
+touch nodes
+printf '${join("\n", aws_instance.node_log_generator.*.public_ip)}\n' >> nodes
+printf '${join("\n", aws_instance.node_flume.*.public_ip)}\n' >> nodes
+printf '${join("\n", aws_instance.node_elasticsearch.*.public_ip)}\n' >> nodes
+printf '${join("\n", aws_instance.node_kibana.*.public_ip)}\n' >> nodes
+EOF
+  }
+}
+
 output "public_ip_node_log_generator" {
   value = "${join(",", aws_instance.node_log_generator.*.public_ip)}"
 }
 
 output "public_ip_node_flume" {
-  value = "${aws_instance.node_flume.public_ip}"
+  value = "${join(",", aws_instance.node_flume.*.public_ip)}"
 }
 
 output "public_ip_node_elasticsearch" {
@@ -188,5 +210,5 @@ output "public_ip_node_elasticsearch" {
 }
 
 output "public_ip_node_kibana" {
-  value = "${aws_instance.node_kibana.public_ip}"
+  value = "${join(",", aws_instance.node_kibana.*.public_ip)}"
 }
