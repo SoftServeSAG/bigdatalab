@@ -71,7 +71,22 @@ resource "aws_instance" "node_log_generator" {
   count = 1
 }
 
+resource "null_resource" "null_elasticsearch_config" {
+  provisioner "local-exec" {
+    command = <<EOF
+FILE_PATH=puppet/hiera/hieradata/aws.yaml
+rm -rf $FILE_PATH
+touch $FILE_PATH
+printf 'profiles::elasticsearch::aws_access_key: '\''${var.access_key}'\''\n' >> $FILE_PATH
+printf 'profiles::elasticsearch::aws_secret_key: '\''${var.secret_key}'\''\n' >> $FILE_PATH
+printf 'profiles::elasticsearch::aws_region: '\''${var.region}'\''\n' >> $FILE_PATH
+EOF
+  }
+}
+
 resource "aws_instance" "node_elasticsearch" {
+  depends_on = ["null_resource.null_elasticsearch_config"]
+
   ami = "${lookup(var.amis, var.os_version)}"
   instance_type = "${var.instance_type}"
   security_groups = ["${var.security_group}"]
@@ -108,12 +123,13 @@ resource "aws_instance" "node_elasticsearch" {
   count = 1
 }
 
-resource "null_resource" "null" {
+resource "null_resource" "null_post_deployment" {
   depends_on = ["aws_instance.node_log_generator", "aws_instance.node_elasticsearch"]
 
   provisioner "local-exec" {
     command = <<EOF
-rm nodes
+rm -rf puppet/hiera/hieradata/aws.yaml
+rm -rf nodes
 touch nodes
 printf '${join("\n", aws_instance.node_log_generator.*.public_ip)}\n' >> nodes
 printf '${join("\n", aws_instance.node_elasticsearch.*.public_ip)}\n' >> nodes

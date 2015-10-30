@@ -5,4 +5,5 @@
   :datadir: "%{settings::yamldir}/hieradata"
 :hierarchy:
   - "%{::clientcert}"
+  - aws
   - common

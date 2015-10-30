@@ -9,8 +9,6 @@ class profiles::elasticsearch (
   $aws_access_key         = undef,
   $aws_secret_key         = undef,
   $aws_region             = undef,
-  $aws_groups             = undef,
-  $aws_availability_zones = undef,
   $aws_host_type          = 'private_ip',
   $aws_ping_timeout_sec   = 30,
   $force_aws_plugin       = false,
@@ -19,7 +17,7 @@ class profiles::elasticsearch (
 ) {
   include profiles::linux
   
-  $is_aws = ($::ec2_instance_id != undef)
+  $is_aws = ($::ec2_metadata != undef)
   $heap_size = ($::memorysize_mb/2).floor
   $instance_name = 'es-01'
 
@@ -58,19 +56,15 @@ class profiles::elasticsearch (
     validate_string($aws_access_key)
     validate_string($aws_secret_key)
     validate_string($aws_region)
-    validate_string($aws_groups)
     validate_string($aws_host_type)
-    validate_string($aws_availability_zones)
     validate_integer($aws_ping_timeout_sec, undef, 1)
     $config_cloud = {
       'cloud.aws.access_key'                 => $aws_access_key,
       'cloud.aws.secret_key'                 => $aws_secret_key ,
       'cloud.aws.region'                     => $aws_region,
       'discovery.type'                       => 'ec2',
-      'discovery.ec2.groups'                 => $aws_groups,
       'discovery.ec2.host_type'              => $aws_host_type,
       'discovery.ec2.ping_timeout'           => "${aws_ping_timeout_sec}s",
-      'discovery.ec2.availability_zones'     => $aws_availability_zones,
       'discovery.zen.ping.multicast.enabled' => false,
     }
   } else {
