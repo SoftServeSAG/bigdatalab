@@ -1,14 +1,14 @@
-Supported OS:
+Tested OS:
 
-- CentOS 6.5
-- CentOS 7.0
+- CentOS 6/7 (64 bit)
+- Ubuntu 14 (64 bit)
 
 Deployment guide:
 
 1. Run:
 
    ```
-   sudo ./yum-install.sh
+   sudo ./core-install.sh
    ./ruby-install.sh
    ./terraform-install.sh
    source $HOME/.bashrc
