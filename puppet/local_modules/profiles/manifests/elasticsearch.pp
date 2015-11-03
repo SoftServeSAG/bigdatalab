@@ -9,6 +9,8 @@ class profiles::elasticsearch (
   $aws_access_key         = undef,
   $aws_secret_key         = undef,
   $aws_region             = undef,
+  $aws_groups             = undef,
+  $aws_availability_zones = undef,
   $aws_host_type          = 'private_ip',
   $aws_ping_timeout_sec   = 30,
   $force_aws_plugin       = false,
@@ -56,9 +58,11 @@ class profiles::elasticsearch (
     validate_string($aws_access_key)
     validate_string($aws_secret_key)
     validate_string($aws_region)
+    validate_string($aws_groups)
+    validate_string($aws_availability_zones)
     validate_string($aws_host_type)
     validate_integer($aws_ping_timeout_sec, undef, 1)
-    $config_cloud = {
+    $config_cloud_initial = {
       'cloud.aws.access_key'                 => $aws_access_key,
       'cloud.aws.secret_key'                 => $aws_secret_key ,
       'cloud.aws.region'                     => $aws_region,
@@ -67,6 +71,20 @@ class profiles::elasticsearch (
       'discovery.ec2.ping_timeout'           => "${aws_ping_timeout_sec}s",
       'discovery.zen.ping.multicast.enabled' => false,
     }
+
+    if($aws_groups) {
+      $config_aws_groups = { 'discovery.ec2.groups' => $aws_groups }
+    } else {
+      $config_aws_groups = {}
+    }
+
+    if($aws_availability_zones) {
+      $config_aws_availability_zones = { 'discovery.ec2.availability_zones' => $aws_availability_zones }
+    } else {
+      $config_aws_availability_zones = {}
+    }
+
+    $config_cloud = $config_cloud_initial + $config_aws_groups + $config_aws_availability_zones
   } else {
     $config_cloud = {
       'discovery.zen.ping.multicast.enabled' => true,
