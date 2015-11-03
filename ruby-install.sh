@@ -20,6 +20,4 @@ OLD_DIR=$(pwd)
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR/puppet
 bundle install
-bundle exec rake prep
-bundle exec rake rspec:classes
 cd $OLD_DIR

@@ -7,6 +7,7 @@ provider "aws" {
 resource "aws_security_group" "security_group" {
   name = "${var.security_group}"
 
+  # T.B.D. Close unneeded ports
   ingress {
     from_port = 0
     to_port = 0
@@ -27,8 +28,22 @@ resource "aws_key_pair" "key" {
   public_key = "${var.public_key}"
 }
 
+resource "null_resource" "null_pre_deployment" {
+  provisioner "local-exec" {
+    command = <<EOF
+cd puppet
+bundle exec rake prep
+bundle exec rake rspec:classes
+cd ..
+EOF
+  }
+}
+
+# T.B.D. Use default var.os_version instead of centos-7.0
 resource "aws_instance" "node_log_generator" {
-  ami = "${lookup(var.amis, var.os_version)}"
+  depends_on = ["null_resource.null_pre_deployment"]
+
+  ami = "${lookup(var.amis, "centos-7.0")}"
   instance_type = "${var.instance_type}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
@@ -39,7 +54,7 @@ resource "aws_instance" "node_log_generator" {
 
   connection {
     type = "ssh"
-    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
+    user = "${lookup(var.users, lookup(var.amis, "centos-7.0"))}"
     key_file = "${var.key_file}"
   }
 
@@ -48,6 +63,7 @@ resource "aws_instance" "node_log_generator" {
     destination = "${var.puppet_path}"
   }
 
+  # T.B.D. PoC, remove
   provisioner "remote-exec" {
     inline = [
       "touch /tmp/elasticsearch_nodes",
@@ -85,7 +101,7 @@ EOF
 }
 
 resource "aws_instance" "node_elasticsearch" {
-  depends_on = ["null_resource.null_elasticsearch_config"]
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_elasticsearch_config"]
 
   ami = "${lookup(var.amis, var.os_version)}"
   instance_type = "${var.instance_type}"
@@ -129,10 +145,9 @@ resource "null_resource" "null_post_deployment" {
   provisioner "local-exec" {
     command = <<EOF
 rm -rf puppet/hiera/hieradata/aws.yaml
-rm -rf nodes
-touch nodes
-printf '${join("\n", aws_instance.node_log_generator.*.public_ip)}\n' >> nodes
-printf '${join("\n", aws_instance.node_elasticsearch.*.public_ip)}\n' >> nodes
+cd puppet
+bundle exec rake clean
+cd ..
 EOF
   }
 }

@@ -1,6 +1,4 @@
-.librarian/
 main.tf
-nodes
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
