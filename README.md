@@ -33,7 +33,7 @@ Deployment guide:
    Please note, that you need a physical machine to be able to run acceptance
    tests.
 
-6. To create instances, run:
+7. To create instances, run:
 
    ```
    terraform apply
@@ -43,7 +43,7 @@ Deployment guide:
    parameter groupId is invalid. The value cannot be empty" error appears,
    just restart the command.
 
-7. To connect to any instance:
+8. To connect to any instance:
 
    ```
    ssh -i <your .pem file> <SSH user>@<IP address>
@@ -51,7 +51,7 @@ Deployment guide:
 
    You can find SSH users for all AMIs in variables.tf.
 
-8. To destroy instances, run:
+9. To destroy instances, run:
 
    ```
    terraform destroy
