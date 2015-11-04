@@ -1,8 +1,8 @@
 ---
 profiles::linux::supported_oss:
   CentOS:
-    - '6' 
-    - '7'
+    - '7' 
+    - '6'
 profiles::linux::repo_timeout: 300
 profiles::linux::exec_path:
   - /bin
