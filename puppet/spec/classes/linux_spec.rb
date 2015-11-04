@@ -12,8 +12,8 @@ describe 'profiles::linux' do
 
   context "when running on unsupported OS version" do
     let(:facts) { {
-      :operatingsystemmajrelease => '6',
-      :operatingsystemrelease    => '6.5'
+      :operatingsystemmajrelease => '5',
+      :operatingsystemrelease    => '5.11'
     } }
     it { should_not compile }
   end

@@ -24,6 +24,15 @@ Deployment guide:
 5. Copy terraform.tfvars.stub to terraform.tfvars.  Update it with actual
    values.  You may also override other values from variables.tf.
 
+6. To run acceptance tests, go to puppet folder and run:
+
+   ```
+   bundle exec rake rspec:acceptance
+   ```
+
+   Please note, that you need a physical machine to be able to run acceptance
+   tests.
+
 6. To create instances, run:
 
    ```

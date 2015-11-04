@@ -2,7 +2,7 @@
 :backends:
   - yaml
 :yaml:
-  :datadir: "spec/hiera/hieradata"
+  :datadir: "/etc/puppetlabs/code/hieradata"
 :hierarchy:
   - "%{::clientcert}"
   - aws

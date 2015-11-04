@@ -3,7 +3,7 @@ require 'pry'
 
 project_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 modules_root = File.join(project_root, 'modules')
-hiera_root = File.join(project_root, 'hiera')
+hiera_root = File.join(project_root, 'spec/hiera_acceptance')
 
 
 hosts.each do |host|
