@@ -2,6 +2,8 @@
 :backends:
   - yaml
 :yaml:
-  :datadir: 'spec/hiera/hieradata'
+  :datadir: "spec/hiera/hieradata"
 :hierarchy:
-  - rspec
+  - "%{::clientcert}"
+  - aws
+  - common

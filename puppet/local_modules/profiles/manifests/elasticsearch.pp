@@ -19,7 +19,7 @@ class profiles::elasticsearch (
 ) {
   include profiles::linux
   
-  $is_aws = ($::ec2_instance_id != undef)
+  $is_aws = ($::ec2_metadata != undef)
   $heap_size = ($::memorysize_mb/2).floor
   $instance_name = 'es-01'
 
@@ -59,20 +59,32 @@ class profiles::elasticsearch (
     validate_string($aws_secret_key)
     validate_string($aws_region)
     validate_string($aws_groups)
-    validate_string($aws_host_type)
     validate_string($aws_availability_zones)
+    validate_string($aws_host_type)
     validate_integer($aws_ping_timeout_sec, undef, 1)
-    $config_cloud = {
+    $config_cloud_initial = {
       'cloud.aws.access_key'                 => $aws_access_key,
       'cloud.aws.secret_key'                 => $aws_secret_key ,
       'cloud.aws.region'                     => $aws_region,
       'discovery.type'                       => 'ec2',
-      'discovery.ec2.groups'                 => $aws_groups,
       'discovery.ec2.host_type'              => $aws_host_type,
       'discovery.ec2.ping_timeout'           => "${aws_ping_timeout_sec}s",
-      'discovery.ec2.availability_zones'     => $aws_availability_zones,
       'discovery.zen.ping.multicast.enabled' => false,
     }
+
+    if($aws_groups) {
+      $config_aws_groups = { 'discovery.ec2.groups' => $aws_groups }
+    } else {
+      $config_aws_groups = {}
+    }
+
+    if($aws_availability_zones) {
+      $config_aws_availability_zones = { 'discovery.ec2.availability_zones' => $aws_availability_zones }
+    } else {
+      $config_aws_availability_zones = {}
+    }
+
+    $config_cloud = $config_cloud_initial + $config_aws_groups + $config_aws_availability_zones
   } else {
     $config_cloud = {
       'discovery.zen.ping.multicast.enabled' => true,
