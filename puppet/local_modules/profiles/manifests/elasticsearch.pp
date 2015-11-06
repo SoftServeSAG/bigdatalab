@@ -14,7 +14,7 @@ class profiles::elasticsearch (
   $aws_host_type          = 'private_ip',
   $aws_ping_timeout_sec   = 30,
   $force_aws_plugin       = false,
-  $num_nodes              = 1,
+  $num_nodes              = 0,
   $cluster_name
 ) {
   include profiles::linux
@@ -24,7 +24,7 @@ class profiles::elasticsearch (
   $instance_name = 'es-01'
 
   validate_string($cluster_name)
-  validate_integer($num_nodes, undef , 1)
+  validate_integer($num_nodes, undef , 0)
   
   $min_master_nodes = ($num_nodes/2).floor + 1
   

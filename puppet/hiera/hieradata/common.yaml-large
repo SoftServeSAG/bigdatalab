@@ -1,13 +1,12 @@
 ---
 profiles::linux::supported_oss:
   CentOS:
-    - '7' 
-    - '6'
+    - '6' 
+    - '7'
 profiles::linux::repo_timeout: 300
 profiles::linux::exec_path:
   - /bin
   - /sbin
   - /usr/bin
   - /usr/sbin
-profiles::elasticsearch::cluster_name: 'bdl'
-profiles::elasticsearch::num_nodes: 2
+profiles::elasticsearch::cluster_name: 'bigdatalab'
