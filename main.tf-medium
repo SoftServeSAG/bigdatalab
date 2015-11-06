@@ -47,9 +47,12 @@ resource "aws_instance" "node_log_generator" {
   instance_type = "${var.instance_type}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
-  
+
   tags = {
-    Name = "bigdatalab-log_generator"
+    Name = "log_generator"
+    App = "${var.tag_app}"
+    Env = "${var.tag_env}"
+    Owner = "${var.tag_owner}"
   }
 
   connection {
@@ -88,7 +91,10 @@ resource "aws_instance" "node_flume" {
   key_name = "${var.key_name}"
 
   tags = {
-    Name = "bigdatalab-flume"
+    Name = "flume"
+    App = "${var.tag_app}"
+    Env = "${var.tag_env}"
+    Owner = "${var.tag_owner}"
   }
 
   connection {
@@ -148,7 +154,10 @@ resource "aws_instance" "node_elasticsearch" {
   key_name = "${var.key_name}"
 
   tags = {
-    Name = "bigdatalab-elasticsearch"
+    Name = "elasticsearch"
+    App = "${var.tag_app}"
+    Env = "${var.tag_env}"
+    Owner = "${var.tag_owner}"
   }
 
   connection {
