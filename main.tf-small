@@ -87,21 +87,26 @@ resource "aws_instance" "node_log_generator" {
   count = 1
 }
 
-resource "null_resource" "null_elasticsearch_config" {
+resource "null_resource" "null_common_aws_config" {
+  depends_on = ["aws_security_group.security_group"]
   provisioner "local-exec" {
     command = <<EOF
 FILE_PATH=puppet/hiera/hieradata/aws.yaml
 rm -rf $FILE_PATH
 touch $FILE_PATH
-printf 'profiles::elasticsearch::aws_access_key: '\''${var.access_key}'\''\n' >> $FILE_PATH
-printf 'profiles::elasticsearch::aws_secret_key: '\''${var.secret_key}'\''\n' >> $FILE_PATH
-printf 'profiles::elasticsearch::aws_region: '\''${var.region}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_access_key: '\''${var.access_key}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_secret_key: '\''${var.secret_key}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_region: '\''${var.region}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_security_group: '\''${var.security_group}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_ssh_username: '\''${lookup(var.users, lookup(var.amis, var.os_version))}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_ami: '\''${lookup(var.amis, var.os_version)}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_security_group_id: '\''${aws_security_group.security_group.id}'\''\n' >> $FILE_PATH
 EOF
   }
 }
 
 resource "aws_instance" "node_elasticsearch" {
-  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_elasticsearch_config"]
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_common_aws_config"]
 
   ami = "${lookup(var.amis, var.os_version)}"
   instance_type = "${var.instance_type}"
@@ -139,8 +144,57 @@ resource "aws_instance" "node_elasticsearch" {
   count = 1
 }
 
+# Deploy instance for Cloudera Director client
+resource "aws_instance" "cloudera_director_client" {
+
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_common_aws_config"]
+
+  ami = "${lookup(var.amis, var.os_version)}"
+  instance_type = "${var.cloudera_director_instance_type}"
+  security_groups = ["${var.security_group}"]
+  key_name = "${var.key_name}"
+
+  tags = {
+    Name = "bigdatalab-cloudera_director_client"
+  }
+
+  connection {
+    type = "ssh"
+    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
+    key_file = "${var.key_file}"
+  }
+
+  provisioner "file" {
+    source = "puppet"
+    destination = "${var.puppet_path}"
+  }
+
+  # Copy private key to be used by Cloudera Director to deploy cluster
+  provisioner "file" {
+    source = "${var.key_file}"
+    destination = "~/.ssh/${var.key_name}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum -y install yum-plugin-fastestmirror",
+      "sudo yum -y update",
+      "sudo yum -y remove java-*-openjdk",
+      "sudo rpm -U https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm",
+      "sudo yum -y install puppet-agent",
+      "sudo ln -sf /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet",
+      "cd ${var.puppet_path}/puppet",
+      "sudo puppet apply --modulepath modules --hiera_config=hiera/hiera.yaml --yamldir hiera manifests/cloudera_director.pp"
+    ]
+  }
+
+  count = 1
+}
+
 resource "null_resource" "null_post_deployment" {
-  depends_on = ["aws_instance.node_log_generator", "aws_instance.node_elasticsearch"]
+  depends_on = ["aws_instance.node_log_generator",
+                "aws_instance.node_elasticsearch",
+                "aws_instance.cloudera_director_client"]
 
   provisioner "local-exec" {
     command = <<EOF
@@ -158,4 +212,8 @@ output "public_ip_node_log_generator" {
 
 output "public_ip_node_elasticsearch" {
   value = "${join(",", aws_instance.node_elasticsearch.*.public_ip)}"
+}
+
+output "public_ip_node_cloudera_director" {
+  value = "${join(",", aws_instance.cloudera_director_client.*.public_ip)}"
 }

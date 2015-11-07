@@ -1,0 +1,3 @@
+class cloudera_director {
+
+}

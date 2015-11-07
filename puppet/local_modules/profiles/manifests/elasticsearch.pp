@@ -6,9 +6,6 @@
 # force_aws_plugin(true) will install AWS plugin even if deployment target is
 #   not AWS. Possible usage scenario - S3 snapshot functionality
 class profiles::elasticsearch (
-  $aws_access_key         = undef,
-  $aws_secret_key         = undef,
-  $aws_region             = undef,
   $aws_groups             = undef,
   $aws_availability_zones = undef,
   $aws_host_type          = 'private_ip',
@@ -18,6 +15,11 @@ class profiles::elasticsearch (
   $cluster_name
 ) {
   include profiles::linux
+
+  # Define common AWS configurations
+  $aws_access_key         = $profiles::common::aws_access_key
+  $aws_secret_key         = $profiles::common::aws_secret_key
+  $aws_region             = $profiles::common::aws_region
   
   $is_aws = ($::ec2_metadata != undef)
   $heap_size = ($::memorysize_mb/2).floor
