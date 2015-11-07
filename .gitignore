@@ -2,3 +2,7 @@ main.tf
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
+
+# Ignore JetBrains IntelliJ artifacts
+.idea/
+*.iml

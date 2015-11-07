@@ -9,6 +9,9 @@ variable "region" {
 variable "instance_type" {
   default = "t1.micro"
 }
+variable "cloudera_director_instance_type" {
+  default = "t1.micro"
+}
 variable "os_version" {
   default = "centos-6.5"
 }
