@@ -24,16 +24,28 @@ Deployment guide:
 5. Copy terraform.tfvars.stub to terraform.tfvars.  Update it with actual
    values.  You may also override other values from variables.tf.
 
-6. To run acceptance tests, go to puppet folder and run:
+6. To run unit tests, go to puppet folder and run:
 
    ```
+   bundle exec rake prep
+   bundle exec rake rspec:classes
+   bundle exec rake clean
+   ```
+
+   Unit tests are being run during each terraform apply too.
+
+7. To run acceptance tests, go to puppet folder and run:
+
+   ```
+   bundle exec rake prep
    bundle exec rake rspec:acceptance
+   bundle exec rake clean
    ```
 
    Please note, that you need a physical machine to be able to run acceptance
    tests.
 
-7. To create instances, run:
+8. To create instances, run:
 
    ```
    terraform apply
@@ -43,7 +55,7 @@ Deployment guide:
    parameter groupId is invalid. The value cannot be empty" error appears,
    just restart the command.
 
-8. To connect to any instance:
+9. To connect to any instance:
 
    ```
    ssh -i <your .pem file> <SSH user>@<IP address>
@@ -51,7 +63,7 @@ Deployment guide:
 
    You can find SSH users for all AMIs in variables.tf.
 
-9. To destroy instances, run:
+10. To destroy instances, run:
 
    ```
    terraform destroy
