@@ -7,12 +7,51 @@ provider "aws" {
 resource "aws_security_group" "security_group" {
   name = "${var.security_group}"
 
-  # T.B.D. Close unneeded ports
+  # ssh
+  ingress {
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # elasticsearch
+  ingress {
+    from_port = 9200
+    to_port = 9200
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # kibana
+  ingress {
+    from_port = 5601
+    to_port = 5601
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # cloudera manager
+  ingress {
+    from_port = 7180
+    to_port = 7180
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # hue
+  ingress {
+    from_port = 8888
+    to_port = 8888
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   ingress {
     from_port = 0
     to_port = 0
     protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    self = true
   }
 
   egress {
