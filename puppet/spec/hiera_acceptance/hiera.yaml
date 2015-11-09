@@ -6,4 +6,5 @@
 :hierarchy:
   - "%{::clientcert}"
   - aws
+  - cluster-common
   - common
