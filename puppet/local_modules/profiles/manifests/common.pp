@@ -3,6 +3,12 @@
 # which are common to every workstation or server in scope of BigDataLab
 #
 
-class profiles::common {
-
+class profiles::common (
+  $aws_access_key,
+  $aws_secret_key,
+  $aws_region,
+  $aws_security_group,
+  $aws_ssh_username,
+  $aws_ami,
+  $aws_security_group_id) {
 }
