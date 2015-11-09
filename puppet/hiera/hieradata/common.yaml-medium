@@ -9,5 +9,4 @@ profiles::linux::exec_path:
   - /sbin
   - /usr/bin
   - /usr/sbin
-profiles::elasticsearch::cluster_name: 'bdl'
-profiles::elasticsearch::num_nodes: 1
+profiles::elasticsearch::cluster_name: 'bigdatalab'
