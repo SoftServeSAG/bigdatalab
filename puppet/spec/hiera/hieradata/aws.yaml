@@ -1,0 +1,8 @@
+---
+profiles::common::aws_access_key: testKey
+profiles::common::aws_secret_key: testSecretKey
+profiles::common::aws_region: testRegion
+profiles::common::aws_security_group: testSecurityGroup
+profiles::common::aws_ssh_username:  testSshUsername
+profiles::common::aws_ami: testAwsAmi
+profiles::common::aws_security_group_id: testAwsSecurityGroup
