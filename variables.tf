@@ -2,7 +2,14 @@ variable "access_key" {}
 variable "secret_key" {}
 variable "key_file" {}
 variable "public_key" {}
+variable "tag_owner" {}
 
+variable "tag_app" {
+  default = "bigdatalab"
+}
+variable "tag_env" {
+  default = "development"
+}
 variable "region" {
   default = "us-east-1"
 }
