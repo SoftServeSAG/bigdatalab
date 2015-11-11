@@ -4,8 +4,8 @@
 
 instances {
 
-  t2large-cm-master {
-    type: t2.large
+  m1large-cm-master {
+    type: m1.large
     image: <%= @aws_ami %>
 
     tags {
@@ -14,8 +14,8 @@ instances {
   }
 
 
-  r3xlarge-master {
-    type: r3.xlarge
+  m1large-master {
+    type: m1.large
     image: <%= @aws_ami %>
 
     tags {
@@ -23,8 +23,8 @@ instances {
     }
   }
 
-  m4xlarge-slave {
-    type: m4.xlarge
+  m1small-slave {
+    type: m1.small
     image: <%= @aws_ami %>
 
     tags {
@@ -90,10 +90,12 @@ instances {
 
 cloudera-manager {
 
-  instance: ${instances.t2large-cm-master} {
+  instance: ${instances.m1large-cm-master} {
     tags {
       # add any additional tags as needed
       application: "Cloudera Manager 5"
+      Env: <%= @aws_tag_env %>
+      Owner: <%= @aws_tag_owner %>
     }
   }
 
@@ -312,7 +314,7 @@ cluster {
   # NOTE: Sentry is only supported in Cloudera Manager versions 5.1 onward.
   # services: [HDFS, YARN, ZOOKEEPER, HBASE, HIVE, HUE, OOZIE, SENTRY, SPARK_ON_YARN, KAFKA]
 
-  services: [HDFS, YARN, ZOOKEEPER, HIVE, HUE, OOZIE, SPARK_ON_YARN]
+  services: [HDFS, YARN, ZOOKEEPER, HIVE, HUE, OOZIE]
 
   #
   # Optional custom service configurations
@@ -379,9 +381,11 @@ cluster {
   masters {
     count: 1
 
-    instance: ${instances.r3xlarge-master} {
+    instance: ${instances.m1large-master} {
       tags {
         group: master
+        Env: <%= @aws_tag_env %>
+        Owner: <%= @aws_tag_owner %>
       }
     }
 
@@ -394,7 +398,7 @@ cluster {
       HUE: ${roles.HUE_MASTERS}
       OOZIE: ${roles.OOZIE_MASTERS}
       # SENTRY: ${roles.SENTRY_MASTERS}
-      SPARK_ON_YARN: ${roles.SPARK_ON_YARN_MASTERS}
+      # SPARK_ON_YARN: ${roles.SPARK_ON_YARN_MASTERS}
       # KAFKA: [KAFKA_BROKER]
     }
 
@@ -418,15 +422,15 @@ cluster {
   }
 
   workers {
-    count: 3
+    count: <%= @data_node_quantity %>
     #
     # Minimum number of instances required to set up the cluster.
     # Fail and quit if minCount number of instances is not available in this cloud
     # environment. Else, continue setting up the cluster.
     #
-    minCount: 3
+    minCount: <%= @data_node_quantity_min_allowed %>
 
-    instance: ${instances.m4xlarge-slave} {
+    instance: ${instances.m1small-slave} {
 
       # Put all cluster nodes in a placement group for improved network performance
       # Note: this only works for a limited set of instances
@@ -436,6 +440,8 @@ cluster {
 
       tags {
         group: worker
+        Env: <%= @aws_tag_env %>
+        Owner: <%= @aws_tag_owner %>
       }
     }
 
@@ -461,19 +467,19 @@ cluster {
     # }
   }
 
-  gateways {
-    count: 1
+  #gateways {
+  #  count: 1
 
-    instance: ${instances.m4xlarge-slave} {
-      tags {
-        group: gateway
-      }
-    }
+  #  instance: ${instances.m4xlarge-slave} {
+  #    tags {
+  #      group: gateway
+  #    }
+  #  }
 
-    roles {
-      HIVE: [GATEWAY]
-      SPARK_ON_YARN: [GATEWAY]
-    }
+  #  roles {
+  #    HIVE: [GATEWAY]
+  #    SPARK_ON_YARN: [GATEWAY]
+  #  }
 
     # Optional custom role configurations
     # Configuration keys containing periods must be enclosed in double quotes.
@@ -485,7 +491,7 @@ cluster {
     #     }
     #   }
     # }
-  }
+  #}
 
   postCreateScripts: ["""#!/bin/sh
 
