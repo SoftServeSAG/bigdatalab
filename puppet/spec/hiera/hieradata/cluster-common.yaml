@@ -1,3 +1,0 @@
----
-profiles::cloudera_director::instance_name_prefix: datalab
-profiles::cloudera_director::private_key_path: ~/.ssh/bigdatalab-key

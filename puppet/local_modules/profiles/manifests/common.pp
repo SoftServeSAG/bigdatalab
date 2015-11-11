@@ -10,5 +10,8 @@ class profiles::common (
   $aws_security_group,
   $aws_ssh_username,
   $aws_ami,
-  $aws_security_group_id) {
+  $aws_security_group_id,
+  $aws_subnetId,
+  $aws_tag_env,
+  $aws_tag_owner) {
 }

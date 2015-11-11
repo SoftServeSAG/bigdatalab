@@ -6,3 +6,6 @@ profiles::common::aws_security_group: testSecurityGroup
 profiles::common::aws_ssh_username:  testSshUsername
 profiles::common::aws_ami: testAwsAmi
 profiles::common::aws_security_group_id: testAwsSecurityGroup
+profiles::common::aws_subnetId: testAwsSubnetId
+profiles::common::aws_tag_env: testTagEnv
+profiles::common::aws_tag_owner: testTagOwner
