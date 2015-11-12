@@ -2,6 +2,7 @@
 # Cloudera Director cluster deployment definition
 #
 define cloudera_director_client::deployment (
+  $deploy_cluster = false,         # [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. Set to false by default
   $cd_version =  '1.5.1',          # Cloudera Director (CD) version
   $redhat_version = '6',           # CD supported RedHat or CentOS version
   $instance_name_prefix,           # Prefix that will be added by CD during instance deployment
@@ -12,7 +13,6 @@ define cloudera_director_client::deployment (
   $aws_subnetId,
   $aws_ssh_username,
   $aws_ssh_private_key,            # An absolute path to .pem file
-  $aws_ami,
   $aws_tag_env,                    # AWS instance tag to identify deployment environment
   $aws_tag_owner,                  # AWS instance tag to identify environment owner
   $data_node_quantity,             # Number of data nodes that will be deployed by cloudera director
@@ -54,10 +54,13 @@ define cloudera_director_client::deployment (
     content => template('cloudera_director_client/cloudera-director.conf.erb'),
   }
 
-# T.B.D. Uncomment cluster deployment command when all cluster configuration will be clarified and setup
-#  exec { 'start-cluster-deployment':
-#    command   => "cloudera-director bootstrap $cloudera_director_configs_path",
-#    timeout   => $cluster_deployment_timeout_sec,
-#    logoutput => true
-#  }
+  if $deploy_cluster {
+    exec { 'start-cluster-deployment':
+      command   => "cloudera-director bootstrap $cloudera_director_configs_path",
+      timeout   => $cluster_deployment_timeout_sec,
+      logoutput => true
+    }
+  } else {
+    warning('Cluster deployment is turned off by default. To deploy cluster to AWS with Cloudera Director Client set deploy_cluster parameter to true')
+  }
 }
