@@ -79,14 +79,14 @@ provider {
     # See: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage_expand_partition.html
     #
 
-    # rootVolumeSizeGB: 100 # defaults to 50 GB if not specified
+    rootVolumeSizeGB: 100 # defaults to 50 GB if not specified
 
     #
     # Specify the type of the EBS volume used for the root partition. Defaults to gp2
     # See: http://aws.amazon.com/ebs/details/
     #
 
-    # rootVolumeType: gp2 # OR standard (for EBS magnetic)
+    rootVolumeType: standard #gp2 # OR standard (for EBS magnetic)
 
     #
     # Whether to associate a public IP address with instances or not. If this is false

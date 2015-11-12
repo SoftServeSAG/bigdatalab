@@ -5,5 +5,5 @@
   :datadir: "/etc/puppetlabs/code/hieradata"
 :hierarchy:
   - "%{::clientcert}"
-  - aws
+  - dynamic
   - common
