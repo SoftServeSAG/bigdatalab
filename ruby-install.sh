@@ -40,8 +40,9 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
      source ~/.bash_profile
 
      # Install Ruby
-     rbenv install 2.2.3
-     rbenv global 2.2.3
+     rbenv install 2.2.2
+     rbenv global 2.2.2
+     gem install bundler -v 1.10.5
      ruby -v
   fi
 
