@@ -1,0 +1,532 @@
+#
+# A list of instance types to use for group of nodes or management services
+#
+
+instances {
+
+  t2large-cm-master {
+    type: t2.large
+    image: ami-3218595b
+
+    tags {
+      owner: ${?USER}
+    }
+  }
+
+
+  t2large-master {
+    type: t2.large
+    image: ami-3218595b
+
+    tags {
+      owner: ${?USER}
+    }
+  }
+
+  t2medium-slave {
+    type: t2.medium
+    image: ami-3218595b
+
+    tags {
+      owner: ${?USER}
+    }
+  }
+
+
+  #c38xl {
+  #      type: c3.8xlarge  # can use both PV (paravirtualization) and HVM AMIs
+  #      image: ami-HVM-REPLACE-ME
+  #
+  #      tags {
+  #          owner: ${?USER}
+  #      }
+  #}
+}
+
+#
+# Optional external database server configuration.
+#
+# Cloudera Director can create databases on existing database servers or
+# provision RDS database servers on-demand.
+#
+# databaseServers {
+#
+#    rdsmysqlprod1 {
+#      type: mysql
+#      user: root
+#      password: rootpassword
+#      instanceClass: db.m3.medium
+#      dbSubnetGroupName: REPLACE-ME
+#      vpcSecurityGroupIds: sg-REPLACE-ME
+#      allocatedStorage: 10
+#      engineVersion: 5.5.40b
+#      tags {
+#        owner: ${?USER}
+#      }
+#    }
+#
+#    existingmysql1 {
+#        type: mysql
+#        host: REPLACE-ME # with IP address of database server
+#        port: 3306
+#        user: root
+#        password: rootpassword
+#    }
+#
+#    existingpostgres1 {
+#        type: postgresql
+#        host: REPLACE-ME # with IP address of database server
+#        port: 5432
+#        user: postgres
+#        password: rootpassword
+#    }
+#
+# }
+
+#
+# Configuration for Cloudera Manager. Cloudera Director can use an existing Cloudera Manager
+# or bootstrap everything from scratch for a new cluster
+#
+
+cloudera-manager {
+
+  instance: ${instances.t2large-cm-master} {
+    tags {
+      # add any additional tags as needed
+      application: "Cloudera Manager 5"
+      Env: <%= @aws_tag_env %>
+      Owner: <%= @aws_tag_owner %>
+    }
+  }
+
+  #
+  # Licensing configuration
+  #
+  # There are three mutually exclusive options for setting up Cloudera Manager's license.
+  # 1. License text may be embedded in this file using the "license" field. Triple quotes (""")
+  #    are recommended for including multi-line text strings.
+  # 2. The "licensePath" can be used to specify the path to a file containing the license.
+  # 3. The "enableEnterpriseTrial" flag indicates whether the 60-Day Cloudera Enterprise Trial
+  #    should be activated when no license is present. This must not be set to true if a
+  #    license is included using either "license" or "licensePath".
+
+  #
+  # Embed a license for Cloudera Manager
+  #
+
+  # license: """
+  #   -----BEGIN PGP SIGNED MESSAGE-----
+  #   Hash: SHA1
+  #
+  # {
+  #   "version"        : 1,
+  #   "name"           : "License Owner",
+  #   "uuid"           : "license id",
+  #   "expirationDate" : 0,
+  #   "features"       : [ "FEATURE1", "FEATURE2" ]
+  # }
+  # -----BEGIN PGP SIGNATURE-----
+  # Version: GnuPG v1.4.11 (GNU/Linux)
+  #
+  # PGP SIGNATURE
+  # -----END PGP SIGNATURE-----
+  # """
+
+  #
+  # Include a license for Cloudera Manager from an external file
+  #
+
+  # licensePath: "/path/to/license.txt.asc"
+
+  #
+  # Activate 60-Day Cloudera Enterprise Trial
+  #
+
+  enableEnterpriseTrial: false
+
+  #
+  # Install unlimited strength JCE policy files along with Cloudera Manager
+  #
+
+  # unlimitedJCE: true
+
+  #
+  # Optional database configuration
+  #
+  # There are three mutually exclusive options for database usage in Cloudera Director.
+  # 1. With no configuration, an embedded PostgreSQL database will be used.
+  # 2. Alternatively, existing external databases can be used.
+  # 3. Finally, databases can be created on the fly on existing external database servers.
+
+  #
+  # Optional configuration for existing external databases
+  #
+  # databases {
+  #     CLOUDERA_MANAGER {
+  #         type: postgresql
+  #
+  #         host: db.example.com
+  #         port: 123
+  #
+  #         user: admin
+  #         password: 1231ed
+  #
+  #         name: scm
+  #     }
+  #
+  #     ACTIVITYMONITOR { ... }
+  #
+  #     REPORTSMANAGER { ... }
+  #
+  #     NAVIGATOR { ... }
+  #
+  #     # Added in Cloudera Manager 5.2+
+  #     NAVIGATORMETASERVER { ... }
+  # }
+
+  #
+  # Optional configuration for creating external databases on the fly
+  #
+  # When a database is created on the fly, Director generates a random database name using the specified database
+  # name prefix, a random username based on the specified username prefix, and a random password. The password is
+  # stored by Director and made available to the service that uses the database. If multiple services reference the
+  # same external database server, Director will create a database for each.
+  #
+
+  # databaseTemplates {
+  #     CLOUDERA_MANAGER {
+  #         name: cmtemplate
+  #         databaseServerName: mysql1 # Must correspond to an external database server named above
+  #         databaseNamePrefix: scm
+  #         usernamePrefix: cmadmin
+  #     }
+  #
+  #     ACTIVITYMONITOR { ... }
+  #
+  #     REPORTSMANAGER { ... }
+  #
+  #     NAVIGATOR { ... }
+  #
+  #     # Added in Cloudera Manager 5.2+
+  #     NAVIGATORMETASERVER { ... }
+  # }
+
+  #
+  # Configuration to override Cloudera Manager package repositories
+  #
+
+  # repository: "http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5.4/"
+  # repositoryKeyUrl: "http://archive.cloudera.com/cm5/redhat/6/x86_64/cm/RPM-GPG-KEY-cloudera"
+
+  # OR use an exist Cloudera Manager installation
+
+  # hostname: "192.168.33.10"
+  # username: <if not default 'admin'>
+  # password: <if not default 'admin'>
+
+  #
+  # Optional configuration for Cloudera Manager and its management services
+  #
+  # Configuration properties for CLOUDERA_MANAGER are documented at
+  # http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cm_props_cmserver.html
+  #
+  # Configuration properties for the Cloudera Management services are documented at
+  # http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cm_props_mgmtservice.html
+  #
+  # Configuration properties for Hosts are documented at
+  # http://www.cloudera.com/content/cloudera/en/documentation/core/latest/topics/cm_props_host.html
+  #
+
+  # configs {
+  #     # CLOUDERA_MANAGER corresponds to the Cloudera Manager Server configuration options
+  #     CLOUDERA_MANAGER {
+  #         enable_api_debug: false
+  #         custom_banner_html: "Managed by Cloudera Director"
+  #     }
+  #
+  #     # CLOUDERA_MANAGEMENT_SERVICE corresponds to the Service-Wide configuration options
+  #     CLOUDERA_MANAGEMENT_SERVICE {
+  #         enable_alerts : false
+  #         enable_config_alerts : false
+  #     }
+  #
+  #     SERVICEMONITOR { ... }
+  #
+  #     ACTIVITYMONITOR { ... }
+  #
+  #     HOSTMONITOR { ... }
+  #
+  #     REPORTSMANAGER { ... }
+  #
+  #     EVENTSERVER { ... }
+  #
+  #     ALERTPUBLISHER { ... }
+  #
+  #     NAVIGATOR { ... }
+  #
+  #     # Added in Cloudera Manager 5.2+
+  #     NAVIGATORMETASERVER { ... }
+  #
+  #     # Configuration properties for all hosts
+  #     HOSTS { ... }
+  # }
+
+}
+
+#
+# Cluster description
+#
+
+cluster {
+
+  # List the products and their versions that need to be installed.
+  # These products must have a corresponding parcel in the parcelRepositories
+  # configured above. The specified version will be used to find a suitable
+  # parcel. Specifying a version that points to more than one parcel among
+  # those available will result in a configuration error. Specify more granular
+  # versions to avoid conflicts.
+
+  products {
+    CDH: 5
+  }
+
+  #
+  # Optional override of CDH parcel repositories
+  #
+
+  # parcelRepositories: ["http://archive.cloudera.com/cdh5/parcels/5.4/"]
+
+  # OR for CDH4:
+  # parcelRepositories: ["http://archive.cloudera.com/cdh4/parcels/latest/",
+  #                      "http://archive.cloudera.com/impala/parcels/latest/",
+  #                      "http://archive.cloudera.com/spark/parcels/latest/"]
+
+
+  #
+  # OR for CDH4
+  #
+  # products {
+  #   CDH: 4
+  #   IMPALA: 1.3
+  #   SPARK: 0.9
+  # }
+
+  # NOTE: Sentry is only supported in Cloudera Manager versions 5.1 onward.
+  # services: [HDFS, YARN, ZOOKEEPER, HBASE, HIVE, HUE, OOZIE, SENTRY, SPARK_ON_YARN, KAFKA]
+
+  services: [HDFS, YARN, ZOOKEEPER, HIVE, HUE, OOZIE]
+
+  #
+  # Optional custom service configurations
+  # Configuration keys containing special characters (e.g., '.', ':') must be enclosed in double quotes.
+  #
+  # configs {
+  #     HDFS {
+  #       dfs_block_size: 134217728
+  #     }
+  #
+  #     MAPREDUCE {
+  #       mapred_system_dir: /user/home
+  #       mr_user_to_impersonate: mapred1
+  #     }
+  #
+  #     KAFKA {
+  #       "num.partitions": 3
+  #     }
+  # }
+
+  #
+  # Optional configuration for existing external database for Hive Metastore or Sentry databases
+  #
+
+  # databases {
+  #     HIVE {
+  #         type: postgresql
+  #         host: db.example.com
+  #         port: 123
+  #         user: hive
+  #         password: pass
+  #         name: hive_db
+  #     },
+  #     SENTRY {
+  #         type: postgresql
+  #         host: db.example.com
+  #         port: 123
+  #         user: sentry
+  #         password: pass
+  #         name: sentry_db
+  #     },
+  # }
+
+  #
+  # Optional configuration for creating external database on the fly for Hive Metastore or Sentry
+  # database
+  #
+
+  # databaseTemplates: {
+  #     HIVE {
+  #         name: hivetemplate
+  #         databaseServerName: mysql1 # Must correspond to an external database server named above
+  #         databaseNamePrefix: hivemetastore
+  #         usernamePrefix: hive
+  #     },
+  #     SENTRY {
+  #         name: sentrytemplate
+  #         databaseServerName: mysql1
+  #         databaseNamePrefix: sentrydb
+  #         usernamePrefix: sentry
+  #     },
+  # }
+
+  masters {
+    count: 1
+
+    instance: ${instances.t2large-master} {
+      tags {
+        group: master
+        Env: <%= @aws_tag_env %>
+        Owner: <%= @aws_tag_owner %>
+      }
+    }
+
+    roles {
+      HDFS: ${roles.HDFS_MASTERS}
+      YARN: ${roles.YARN_MASTERS}
+      ZOOKEEPER: ${roles.ZOOKEEPER_MASTERS}
+      # HBASE: ${roles.HBASE_MASTERS}
+      HIVE: ${roles.HIVE_MASTERS}
+      HUE: ${roles.HUE_MASTERS}
+      OOZIE: ${roles.OOZIE_MASTERS}
+      # SENTRY: ${roles.SENTRY_MASTERS}
+      # SPARK_ON_YARN: ${roles.SPARK_ON_YARN_MASTERS}
+      # KAFKA: [KAFKA_BROKER]
+    }
+
+    # Optional custom role configurations
+    # Configuration keys containing special characters (e.g., '.', ':') must be enclosed in double quotes.
+    #
+    # configs {
+    #   HDFS {
+    #      NAMENODE {
+    #        dfs_name_dir_list: /data/nn
+    #        namenode_port: 1234
+    #      }
+    #   }
+    #   KAFKA {
+    #      KAFKA_BROKER {
+    #        broker_max_heap_size: 512
+    #        "log.dirs": /data0/kafka/data
+    #     }
+    #   }
+    # }
+  }
+
+  workers {
+    count: <%= @data_node_quantity %>
+    #
+    # Minimum number of instances required to set up the cluster.
+    # Fail and quit if minCount number of instances is not available in this cloud
+    # environment. Else, continue setting up the cluster.
+    #
+    minCount: <%= @data_node_quantity_min_allowed %>
+
+    instance: ${instances.t2medium-slave} {
+
+      # Put all cluster nodes in a placement group for improved network performance
+      # Note: this only works for a limited set of instances
+      # http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-groups.html
+
+      # placementGroup: REPLACE-ME
+
+      tags {
+        group: worker
+        Env: <%= @aws_tag_env %>
+        Owner: <%= @aws_tag_owner %>
+      }
+    }
+
+    roles {
+      HDFS: ${roles.HDFS_WORKERS}
+      YARN: ${roles.YARN_WORKERS}
+      # HBASE: ${roles.HBASE_WORKERS}
+    }
+
+    # Optional custom role configurations
+    # Configuration keys containing periods must be enclosed in double quotes.
+    # configs {
+    #   HDFS {
+    #     DATANODE {
+    #        dfs_data_dir_list: /data/dn
+    #      }
+    #   }
+    #   HBASE {
+    #     REGIONSERVER {
+    #       hbase_regionserver_java_heapsize: 4000000000
+    #     }
+    #   }
+    # }
+  }
+
+  #gateways {
+  #  count: 1
+
+  #  instance: ${instances.m4xlarge-slave} {
+  #    tags {
+  #      group: gateway
+  #    }
+  #  }
+
+  #  roles {
+  #    HIVE: [GATEWAY]
+  #    SPARK_ON_YARN: [GATEWAY]
+  #  }
+
+    # Optional custom role configurations
+    # Configuration keys containing periods must be enclosed in double quotes.
+    # configs {
+    #   HIVE {
+    #     GATEWAY {
+    #       hive_metastore_timeout: 3000
+    #       client_config_root_dir: /etc/hive
+    #     }
+    #   }
+    # }
+  #}
+
+  postCreateScripts: ["""#!/bin/sh
+
+# This is an embedded post creation script that runs as root and can be used to
+# customize the cluster after it has been created.
+
+# If the exit code is not zero Cloudera Director will fail
+
+# Post creation scripts also have access to the following environment variables:
+
+#    DEPLOYMENT_HOST_PORT
+#    ENVIRONMENT_NAME
+#    DEPLOYMENT_NAME
+#    CLUSTER_NAME
+#    CM_USERNAME
+#    CM_PASSWORD
+#    SSH_USERNAME
+#    SSH_PASSWORD         (only available if SSH_PRIVATE_KEY is not set)
+#    SSH_PRIVATE_KEY      (only available if SSH_PASSWORD is not set)
+
+echo 'Hello World!'
+exit 0
+    """,
+    """#!/usr/bin/python
+
+# Additionally, multiple post creation scripts can be supplied.  They will run
+# in the # order they are listed here.  Interpeters other than bash can be used
+#  as well.
+
+print 'Hello again!'
+    """]
+
+  # For more complex scripts, post creation scripts can be supplied via path,
+  # where they will be read from the local filesystem.  They will run after
+  # any scripts supplied in the previous postCreateScripts section.
+  # postCreateScriptsPaths: ["/tmp/test-script.sh",
+  #                         "/tmp/test-script.py"]
+}
