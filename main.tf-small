@@ -115,14 +115,9 @@ resource "aws_instance" "node_log_generator" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo yum -y install yum-plugin-fastestmirror",
-      "sudo yum -y update",
-      "sudo yum -y remove java-*-openjdk",
-      "sudo rpm -U https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm",
-      "sudo yum -y install puppet-agent",
-      "sudo ln -sf /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet",
-      "cd ${var.puppet_path}/puppet",
-      "sudo puppet apply --modulepath modules --hiera_config=hiera/hiera.yaml --yamldir hiera manifests/log_generator_flume.pp"
+      "export PUPPET_ROLE=log_generator_flume",
+      "sudo chmod +x ${var.puppet_path}/puppet/roles_provisioning.sh",
+      "${var.puppet_path}/puppet/roles_provisioning.sh"
     ]
   }
 
@@ -177,14 +172,9 @@ resource "aws_instance" "node_elasticsearch" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo yum -y install yum-plugin-fastestmirror",
-      "sudo yum -y update",
-      "sudo yum -y remove java-*-openjdk",
-      "sudo rpm -U https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm",
-      "sudo yum -y install puppet-agent",
-      "sudo ln -sf /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet",
-      "cd ${var.puppet_path}/puppet",
-      "sudo puppet apply --modulepath modules --hiera_config=hiera/hiera.yaml --yamldir hiera manifests/elasticsearch_kibana.pp"
+      "export PUPPET_ROLE=elasticsearch_kibana",
+      "sudo chmod +x ${var.puppet_path}/puppet/roles_provisioning.sh",
+      "${var.puppet_path}/puppet/roles_provisioning.sh"
     ]
   }
 
@@ -224,16 +214,9 @@ resource "aws_instance" "cloudera_director_client" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo yum -y install yum-plugin-fastestmirror",
-      "sudo yum -y update",
-      "sudo yum -y remove java-*-openjdk",
-      "sudo rpm -U https://yum.puppetlabs.com/puppetlabs-release-pc1-el-6.noarch.rpm",
-      "sudo yum -y install puppet-agent",
-      "sudo ln -sf /opt/puppetlabs/puppet/bin/puppet /usr/bin/puppet",
-      "cd ${var.puppet_path}/puppet",
-      # Setup subnetID parameter as it's computed value and we are not able to prepare it in scope of 'null_dynamic_config'
-      "echo 'profiles::common::aws_subnetId: ${aws_instance.cloudera_director_client.subnet_id}' >> hiera/hieradata/dynamic.yaml",
-      "sudo puppet apply --modulepath modules --hiera_config=hiera/hiera.yaml --yamldir hiera manifests/cloudera_director_client.pp"
+      "export PUPPET_ROLE=cloudera_director_client",
+      "sudo chmod +x ${var.puppet_path}/puppet/roles_provisioning.sh",
+      "${var.puppet_path}/puppet/roles_provisioning.sh ${aws_instance.cloudera_director_client.subnet_id}"
     ]
   }
 
