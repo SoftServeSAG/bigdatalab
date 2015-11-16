@@ -2,3 +2,22 @@ main.tf
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
+
+# Puppet artifacts
+puppet/.librarian/
+puppet/.tmp/
+puppet/.vagrant/
+puppet/junit/
+puppet/log/
+puppet/modules/
+puppet/vendor/
+puppet/spec/fixtures/modules/
+puppet/local_modules/profiles/.modules/
+
+# Hiera sensitive configuration
+puppet/hiera/hieradata/dynamic.yaml
+puppet/hiera/hieradata/common.yaml
+
+# JetBrains IntelliJ artifacts
+.idea/
+*.iml

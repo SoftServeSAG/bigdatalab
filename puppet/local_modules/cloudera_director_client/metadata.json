@@ -1,0 +1,22 @@
+{
+  "name": "softservesag/cloudera_director_client",
+  "version": "0.1.0",
+  "author": "SoftServe SAG",
+  "license": "Apache-2.0",
+  "summary": "Installs Cloudera Director client and deploys cluster",
+  "source": "https://github.com/SoftServeSAG/bigdatalab/puppet/local_modules/cloudera_director_client",
+  "project_page": "https://github.com/SoftServeSAG/bigdatalab",
+  "issues_url": "https://github.com/SoftServeSAG/bigdatalab/issues",
+  "tags": ["SoftServe", "SAG", "BigDataLab", "cloudera", "cloudera_director_client"],
+  "operatingsystem_support": [
+    {
+      "operatingsystem":"CentOS",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    }
+  ],
+  "dependencies": [
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 3.2.0 <5.0.0" }
+  ]
+}

@@ -1,0 +1,114 @@
+#
+# Copyright (c) 2015 Cloudera, Inc. All rights reserved.
+#
+
+#
+# Sample AWS Cloudera Director configuration file based on the Cloudera AWS reference architecture:
+# http://www.cloudera.com/content/cloudera/en/resources/library/whitepaper/cloudera-enterprise-reference-architecture-for-aws-deployments.html
+#
+
+#
+# Cluster name
+#
+
+name: <%= @cluster_name %>
+
+#
+# Cloud provider configuration (credentials, region or zone and optional default image)
+#
+
+provider {
+    type: aws
+
+    #
+    # Get AWS credentials from the OS environment
+    # See http://docs.aws.amazon.com/general/latest/gr/aws-security-credentials.html
+    #
+    # If specifying the access keys directly and not through variables, make sure to enclose
+    # them in double quotes.
+    #
+    # Not needed when running on an instance launched with an IAM role.
+
+    accessKeyId: <%= @aws_access_key_id %>
+    secretAccessKey: <%= @aws_secret_access_key %>
+
+    #
+    # Whether to publish access keys. Default is false.
+    # Publishing access keys to clients is necessary for those clients to have access to S3.
+    # These keys are published in the configuration files of all HDFS clients.
+    #
+
+    publishAccessKeys: true
+
+    #
+    # ID of the Amazon AWS region to use
+    # See: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html
+    #
+
+    region: <%= @aws_region %>
+
+    #
+    # Region endpoint (if you are using one of the Gov. regions)
+    #
+
+    # regionEndpoint: ec2.us-gov-west-1.amazonaws.com
+
+    #
+    # ID of the VPC subnet
+    # See: http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Subnets.html
+    #
+
+    subnetId: <%= @aws_subnetId %>
+
+    #
+    # Comma separated list of security group IDs
+    # See: http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_SecurityGroups.html
+    #
+    # Default security group
+    securityGroupsIds: <%= @aws_security_group_ids %>
+
+    #
+    # A prefix that Cloudera Director should use when naming the instances (this is not part of the hostname)
+    #
+
+    instanceNamePrefix: <%= @instance_name_prefix %>
+
+    #
+    # Specify a size for the root volume (in GBs). Cloudera Director will automatically expand the
+    # filesystem so that you can use all the available disk space for your application
+    # See: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage_expand_partition.html
+    #
+
+    rootVolumeSizeGB: 100 # defaults to 50 GB if not specified
+
+    #
+    # Specify the type of the EBS volume used for the root partition. Defaults to gp2
+    # See: http://aws.amazon.com/ebs/details/
+    #
+
+    rootVolumeType: standard #gp2 # OR standard (for EBS magnetic)
+
+    #
+    # Whether to associate a public IP address with instances or not. If this is false
+    # we expect instances to be able to access the internet using a NAT instance
+    #
+    # Currently the only way to get optimal S3 data transfer performance is to assign
+    # public IP addresses to your instances and not use NAT instances (public subnet setup)
+    #
+    # See: http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpc-ip-addressing.html
+    #
+
+    # associatePublicIpAddresses: true
+
+}
+
+#
+# SSH credentials to use to connect to the instances
+#
+
+ssh {
+    username: <%= @aws_ssh_username %> # for RHEL image
+    privateKey: <%= @aws_ssh_private_key %> # with an absolute path to .pem file
+}
+
+<%= @cluster_specific_config %>

@@ -15,6 +15,12 @@ FORGE
     spiette-selinux (0.5.4)
 
 PATH
+  remote: local_modules/cloudera_director_client
+  specs:
+    softservesag-cloudera_director_client (0.1.0)
+      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
+
+PATH
   remote: local_modules/jdk_oracle
   specs:
     softservesag-jdk_oracle (0.1.0)
@@ -43,6 +49,7 @@ PATH
       softservesag-profiles (= 0.1.0)
 
 DEPENDENCIES
+  softservesag-cloudera_director_client (>= 0)
   softservesag-jdk_oracle (>= 0)
   softservesag-log_generator (>= 0)
   softservesag-profiles (>= 0)
