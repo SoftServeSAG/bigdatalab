@@ -6,6 +6,8 @@
 # force_aws_plugin(true) will install AWS plugin even if deployment target is
 #   not AWS. Possible usage scenario - S3 snapshot functionality
 class profiles::elasticsearch (
+  $es_version             = undef,
+  $es_major_repo_version  = undef,
   $aws_groups             = undef,
   $aws_availability_zones = undef,
   $aws_host_type          = 'private_ip',
@@ -94,7 +96,9 @@ class profiles::elasticsearch (
   }
   
   class { 'elasticsearch':
-    package_url   => 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.1.noarch.rpm',
+    manage_repo   => true,
+    repo_version  => $es_major_repo_version,
+    version       => $es_version,
     config        => $config_common + $cluster_routing + $config_cloud,
     datadir       => ['/var/lib/elasticsearch'],
     init_defaults => {
