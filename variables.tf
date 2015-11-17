@@ -2,6 +2,7 @@ variable "access_key" {}
 variable "secret_key" {}
 variable "key_file" {}
 variable "public_key" {}
+variable "vpc_subnet_id" {}
 variable "tag_owner" {}
 
 variable "tag_app" {
