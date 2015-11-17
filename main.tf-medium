@@ -83,7 +83,7 @@ resource "aws_instance" "node_log_generator" {
   depends_on = ["null_resource.null_pre_deployment"]
 
   ami = "${lookup(var.amis, "centos-7.0")}"
-  instance_type = "${var.instance_type}"
+  instance_type = "${lookup(var.instance_types, "log_generator")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
 
@@ -120,7 +120,7 @@ resource "aws_instance" "node_flume" {
   depends_on = ["null_resource.null_pre_deployment"]
 
   ami = "${lookup(var.amis, var.os_version)}"
-  instance_type = "${var.instance_type}"
+  instance_type = "${lookup(var.instance_types, "flume")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
 
@@ -185,7 +185,7 @@ resource "aws_instance" "node_elasticsearch" {
   depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config"]
 
   ami = "${lookup(var.amis, var.os_version)}"
-  instance_type = "${var.instance_type}"
+  instance_type = "${lookup(var.instance_types, "elasticsearch_kibana")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
 
@@ -222,7 +222,7 @@ resource "aws_instance" "cloudera_director_client" {
   depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config"]
 
   ami = "${lookup(var.amis, var.os_version)}"
-  instance_type = "${var.instance_type}"
+  instance_type = "${lookup(var.instance_types, "cloudera_director_client")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
 

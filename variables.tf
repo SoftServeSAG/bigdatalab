@@ -13,8 +13,16 @@ variable "tag_env" {
 variable "region" {
   default = "us-east-1"
 }
-variable "instance_type" {
-  default = "t1.micro"
+variable "instance_types" {
+  default = {
+    log_generator = "t1.micro"
+    flume = "t1.micro"
+    kibana = "t1.micro"
+    elasticsearch = "t1.micro"
+    cloudera_director_client = "t1.micro"
+    elasticsearch_kibana = "t1.micro"
+    log_generator_flume = "t1.micro"
+  }
 }
 variable "os_version" {
   default = "centos-6.5"
