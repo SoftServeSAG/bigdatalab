@@ -1,5 +1,6 @@
 access_key=""
 secret_key=""
+vpc_subnet_id=""
 key_file=""
 public_key=""
 tag_owner=""
