@@ -82,7 +82,7 @@ EOF
 resource "aws_instance" "node_log_generator" {
   depends_on = ["null_resource.null_pre_deployment"]
 
-  ami = "${lookup(var.amis, "centos-7.0")}"
+  ami = "${lookup(var.amis, lookup(var.os_versions, "log_generator"))}"
   instance_type = "${lookup(var.instance_types, "log_generator")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
@@ -96,7 +96,7 @@ resource "aws_instance" "node_log_generator" {
 
   connection {
     type = "ssh"
-    user = "${lookup(var.users, lookup(var.amis, "centos-7.0"))}"
+    user = "${lookup(var.users, lookup(var.amis, lookup(var.os_versions, "log_generator")))}"
     key_file = "${var.key_file}"
   }
 
@@ -108,8 +108,8 @@ resource "aws_instance" "node_log_generator" {
   provisioner "remote-exec" {
     inline = [
       "export PUPPET_ROLE=log_generator",
-      "sudo chmod +x ${var.puppet_path}/puppet/roles_provisioning.sh",
-      "${var.puppet_path}/puppet/roles_provisioning.sh"
+      "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
+      "${var.puppet_path}/puppet/puppet.sh"
     ]
   }
 
@@ -119,7 +119,7 @@ resource "aws_instance" "node_log_generator" {
 resource "aws_instance" "node_flume" {
   depends_on = ["null_resource.null_pre_deployment"]
 
-  ami = "${lookup(var.amis, var.os_version)}"
+  ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
   instance_type = "${lookup(var.instance_types, "flume")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
@@ -133,7 +133,7 @@ resource "aws_instance" "node_flume" {
 
   connection {
     type = "ssh"
-    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
+    user = "${lookup(var.users, lookup(var.amis, lookup(var.os_versions, "default")))}"
     key_file = "${var.key_file}"
   }
 
@@ -153,8 +153,8 @@ resource "aws_instance" "node_flume" {
   provisioner "remote-exec" {
     inline = [
       "export PUPPET_ROLE=flume",
-      "sudo chmod +x ${var.puppet_path}/puppet/roles_provisioning.sh",
-      "${var.puppet_path}/puppet/roles_provisioning.sh"
+      "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
+      "${var.puppet_path}/puppet/puppet.sh"
     ]
   }
 
@@ -171,8 +171,8 @@ printf 'profiles::common::aws_access_key: '\''${var.access_key}'\''\n' >> $FILE_
 printf 'profiles::common::aws_secret_key: '\''${var.secret_key}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_region: '\''${var.region}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_security_group: '\''${var.security_group}'\''\n' >> $FILE_PATH
-printf 'profiles::common::aws_ssh_username: '\''${lookup(var.users, lookup(var.amis, var.os_version))}'\''\n' >> $FILE_PATH
-printf 'profiles::common::aws_ami: '\''${lookup(var.amis, var.os_version)}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_ssh_username: '\''${lookup(var.users, lookup(var.amis, lookup(var.os_versions, "default")))}'\''\n' >> $FILE_PATH
+printf 'profiles::common::aws_ami: '\''${lookup(var.amis, lookup(var.os_versions, "default"))}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_security_group_id: '\''${aws_security_group.security_group.id}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_subnetId: '\''${var.vpc_subnet_id}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_tag_env: '\''${var.tag_env}'\''\n' >> $FILE_PATH
@@ -185,7 +185,7 @@ EOF
 resource "aws_instance" "node_elasticsearch" {
   depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config"]
 
-  ami = "${lookup(var.amis, var.os_version)}"
+  ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
   instance_type = "${lookup(var.instance_types, "elasticsearch_kibana")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
@@ -199,7 +199,7 @@ resource "aws_instance" "node_elasticsearch" {
 
   connection {
     type = "ssh"
-    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
+    user = "${lookup(var.users, lookup(var.amis, lookup(var.os_versions, "default")))}"
     key_file = "${var.key_file}"
   }
 
@@ -211,8 +211,8 @@ resource "aws_instance" "node_elasticsearch" {
   provisioner "remote-exec" {
     inline = [
       "export PUPPET_ROLE=elasticsearch_kibana",
-      "sudo chmod +x ${var.puppet_path}/puppet/roles_provisioning.sh",
-      "${var.puppet_path}/puppet/roles_provisioning.sh"
+      "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
+      "${var.puppet_path}/puppet/puppet.sh"
     ]
   }
 
@@ -222,7 +222,7 @@ resource "aws_instance" "node_elasticsearch" {
 resource "aws_instance" "cloudera_director_client" {
   depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config"]
 
-  ami = "${lookup(var.amis, var.os_version)}"
+  ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
   instance_type = "${lookup(var.instance_types, "cloudera_director_client")}"
   security_groups = ["${var.security_group}"]
   key_name = "${var.key_name}"
@@ -236,7 +236,7 @@ resource "aws_instance" "cloudera_director_client" {
 
   connection {
     type = "ssh"
-    user = "${lookup(var.users, lookup(var.amis, var.os_version))}"
+    user = "${lookup(var.users, lookup(var.amis, lookup(var.os_versions, "default")))}"
     key_file = "${var.key_file}"
   }
 
@@ -254,8 +254,8 @@ resource "aws_instance" "cloudera_director_client" {
   provisioner "remote-exec" {
     inline = [
       "export PUPPET_ROLE=cloudera_director_client",
-      "sudo chmod +x ${var.puppet_path}/puppet/roles_provisioning.sh",
-      "${var.puppet_path}/puppet/roles_provisioning.sh ${aws_instance.cloudera_director_client.subnet_id}"
+      "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
+      "${var.puppet_path}/puppet/puppet.sh"
     ]
   }
 
