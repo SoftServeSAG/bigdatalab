@@ -1,3 +1,4 @@
+# Terraform artifact
 main.tf
 terraform.tfstate
 terraform.tfstate.backup
