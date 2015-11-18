@@ -5,8 +5,8 @@
 instances {
 
   t2large-cm-master {
-    type: t2.large
-    image: ami-3218595b
+    type: <%= @cloudera_manager_instance_type %>
+    image: <%= @aws_ami %>
 
     tags {
       owner: ${?USER}
@@ -15,8 +15,8 @@ instances {
 
 
   t2large-master {
-    type: t2.large
-    image: ami-3218595b
+    type: <%= @master_node_instance_type %>
+    image: <%= @aws_ami %>
 
     tags {
       owner: ${?USER}
@@ -24,8 +24,8 @@ instances {
   }
 
   t2medium-slave {
-    type: t2.medium
-    image: ami-3218595b
+    type: <%= @data_node_instance_type %>
+    image: <%= @aws_ami %>
 
     tags {
       owner: ${?USER}
