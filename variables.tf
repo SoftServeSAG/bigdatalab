@@ -25,8 +25,11 @@ variable "instance_types" {
     log_generator_flume = "t1.micro"
   }
 }
-variable "os_version" {
-  default = "centos-6.5"
+variable "os_versions" {
+  default = {
+    default = "centos-6.5"
+    log_generator = "centos-7.0"
+  }
 }
 variable "security_group" {
   default = "bigdatalab-group"
