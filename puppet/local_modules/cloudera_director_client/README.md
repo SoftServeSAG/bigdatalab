@@ -21,9 +21,7 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
     deploy_cluster                 => true 
     cd_version                     =>  '1.5.1',
     redhat_version                 => '6',
-    instance_name_prefix           => $instance_name_prefix,
-    data_node_quantity             => $data_node_quantity,
-    data_node_quantity_min_allowed => $data_node_quantity_min_allowed, 
+    instance_name_prefix           => $instance_name_prefix,    
     aws_access_key_id              => $aws_access_key,
     aws_secret_access_key          => $aws_secret_key,
     aws_region                     => $aws_region,
@@ -32,6 +30,13 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
     aws_ssh_private_key            => $private_key_path,
     aws_tag_env                    => $profiles::common::aws_tag_env,
     aws_tag_owner                  => $profiles::common::aws_tag_owner,
+    root_volume_size_GB            => $root_volume_size_GB,
+    data_node_quantity             => $data_node_quantity,
+    data_node_quantity_min_allowed => $data_node_quantity_min_allowed, 
+    data_node_instance_type        => $data_node_instance_type,
+    cloudera_manager_instance_type => $cloudera_manager_instance_type,
+    master_node_instance_type      => $master_node_instance_type,
+    aws_ami                        => $aws_ami,
     user_home_path                 => $instance_home_path,
     cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec
   }
@@ -44,8 +49,6 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
 - **cd_version**                     - Cloudera Director (CD) version. (Default: 1.5.1)
 - **redhat_version**                 - CD supported RedHat or CentOS version (Default: 6)
 - **instance_name_prefix**           - Prefix that will be added to all instances names, deployed by cloudera director
-- **data_node_quantity**             - Number of cluster data nodes deployed on AWS
-- **data_node_quantity_min_allowed** - Min number of cluster data nodes allowed to be deployed to aws. Otherwice process will fail
 - **aws_access_key_id**              - AWS access key id
 - **aws_secret_access_key**          - AWS secret access key
 - **aws_region**                     - AWS region
@@ -54,5 +57,12 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
 - **aws_ssh_private_key**            - Direct path to private key on the cloudera director instance machine. 
 - **aws_tag_env**                    - AWS instance tag
 - **aws_tag_owner**                  - AWS instance tag
+- **root_volume_size_GB**            - AWS volume size has to be allocated for each cluster node. Root partition on each node will be resized accordingly
+- **data_node_quantity**             - Number of cluster data nodes deployed on AWS
+- **data_node_quantity_min_allowed** - Min number of cluster data nodes allowed to be deployed to aws. Otherwise process will fail
+- **data_node_instance_type**        - AWS instance type for data node
+- **cloudera_manager_instance_type** - AWS instance type for Cloudera Manager
+- **master_node_instance_type**      - AWS instance type for master node
+- **aws_ami**                        - AWS AMI type for all cluster nodes
 - **user_home_path**                 - Home path on machine where cloudera director client deployed
 - **cluster_deployment_timeout_sec** - Cluster deployment timeout in seconds. It has to be changed depends on cluster size.
