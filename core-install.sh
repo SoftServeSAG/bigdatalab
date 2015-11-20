@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-if [ "$EUID" -ne "0" ]; then
-  echo "This script must be run as root." >&2
+if [[ "$EUID" -ne "0" && "$OSTYPE" != "darwin"* ]]; then
+  echo "This script must be run as root on Linux." >&2
   exit 1
 fi
 
-if [[ $(ls /etc/*release | grep 'redhat') != '' ]]; then
+if [[ $(ls /etc/*release 2>/dev/null | grep 'redhat' 2>/dev/null) != '' ]]; then
+  echo "OS Detected: RedHat Linux"
   yum -y install yum-plugin-fastestmirror
   yum -y update
   yum -y groupinstall "Development tools"
@@ -20,7 +21,8 @@ if [[ $(ls /etc/*release | grep 'redhat') != '' ]]; then
   else
     echo 'ERROR: No appropriate VirtualBox package found'
   fi
-elif [[ $(ls /etc/*release | grep 'lsb') != '' ]]; then
+elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
+  echo "OS Detected: Debian Linux"
   apt-get -y update
   apt-get -y upgrade
   apt-get -y install curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev
@@ -43,6 +45,37 @@ elif [[ $(ls /etc/*release | grep 'lsb') != '' ]]; then
   else
     echo 'ERROR: No appropriate VirtualBox package found'
   fi
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "OS Detected: MacOS"
+
+  # Install Brew
+  if hash brew 2>/dev/null; then
+    echo "Brew is already installed"
+  else
+    echo "Installing Brew"
+    cd /usr/local
+    mkdir homebrew && curl -L https://github.com/Homebrew/homebrew/tarball/master | tar xz --strip 1 -C homebrew
+    ln -s /usr/local/homebrew/bin/brew /usr/local/bin/brew
+  fi
+
+  # Install Vagrant
+  if hash vagrant 2>/dev/null; then
+    echo "Vagrant is already installed"
+  else
+    echo "Installing Vagrant"
+    brew install Caskroom/cask/vagrant --force
+  fi
+
+
+  # Install VirtualBox
+  if hash vboxmanage 2>/dev/null; then
+    echo "Virtualbox is already installed"
+  else
+    echo "Installing Virtualbox"
+    brew install Caskroom/cask/virtualbox --force
+    brew install Caskroom/cask/virtualbox-extension-pack --force
+  fi
+
 else
-  echo 'ERROR: Unknown OS'
+  echo "ERROR: Unsupported OS $OSTYPE"
 fi
