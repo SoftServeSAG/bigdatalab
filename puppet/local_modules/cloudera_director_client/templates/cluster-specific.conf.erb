@@ -314,7 +314,7 @@ cluster {
   # NOTE: Sentry is only supported in Cloudera Manager versions 5.1 onward.
   # services: [HDFS, YARN, ZOOKEEPER, HBASE, HIVE, HUE, OOZIE, SENTRY, SPARK_ON_YARN, KAFKA]
 
-  services: [HDFS, YARN, ZOOKEEPER, HIVE, HUE, OOZIE]
+  services: [HDFS, YARN, ZOOKEEPER, HIVE, HUE, OOZIE, IMPALA]
 
   #
   # Optional custom service configurations
@@ -390,13 +390,14 @@ cluster {
     }
 
     roles {
-      HDFS: ${roles.HDFS_MASTERS}
+      HDFS: [NAMENODE, SECONDARYNAMENODE, BALANCER, HTTPFS]
       YARN: ${roles.YARN_MASTERS}
       ZOOKEEPER: ${roles.ZOOKEEPER_MASTERS}
       # HBASE: ${roles.HBASE_MASTERS}
       HIVE: ${roles.HIVE_MASTERS}
       HUE: ${roles.HUE_MASTERS}
       OOZIE: ${roles.OOZIE_MASTERS}
+      IMPALA: ${roles.IMPALA_MASTERS}
       # SENTRY: ${roles.SENTRY_MASTERS}
       # SPARK_ON_YARN: ${roles.SPARK_ON_YARN_MASTERS}
       # KAFKA: [KAFKA_BROKER]
@@ -448,6 +449,7 @@ cluster {
     roles {
       HDFS: ${roles.HDFS_WORKERS}
       YARN: ${roles.YARN_WORKERS}
+      IMPALA: ${roles.IMPALA_WORKERS}
       # HBASE: ${roles.HBASE_WORKERS}
     }
 
