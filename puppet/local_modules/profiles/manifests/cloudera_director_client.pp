@@ -5,6 +5,11 @@ class profiles::cloudera_director_client (
     $private_key_path,
     $data_node_quantity,
     $data_node_quantity_min_allowed,
+    $root_volume_size_GB,
+    $data_node_instance_type,
+    $cloudera_manager_instance_type,
+    $master_node_instance_type,
+    $aws_ami,
     $instance_home_path,
     $cluster_deployment_timeout_sec) {
 
@@ -24,6 +29,11 @@ class profiles::cloudera_director_client (
     aws_ssh_private_key            => $private_key_path,
     aws_tag_env                    => $profiles::common::aws_tag_env,
     aws_tag_owner                  => $profiles::common::aws_tag_owner,
+    root_volume_size_GB            => $root_volume_size_GB,
+    data_node_instance_type        => $data_node_instance_type,
+    cloudera_manager_instance_type => $cloudera_manager_instance_type,
+    master_node_instance_type      => $master_node_instance_type,
+    aws_ami                        => $aws_ami,
     user_home_path                 => $instance_home_path,
     cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec
   }
