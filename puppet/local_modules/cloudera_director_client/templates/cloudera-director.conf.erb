@@ -79,7 +79,7 @@ provider {
     # See: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage_expand_partition.html
     #
 
-    rootVolumeSizeGB: 100 # defaults to 50 GB if not specified
+    rootVolumeSizeGB: <%= @root_volume_size_GB %> # defaults to 50 GB if not specified
 
     #
     # Specify the type of the EBS volume used for the root partition. Defaults to gp2

@@ -15,8 +15,13 @@ define cloudera_director_client::deployment (
   $aws_ssh_private_key,            # An absolute path to .pem file
   $aws_tag_env,                    # AWS instance tag to identify deployment environment
   $aws_tag_owner,                  # AWS instance tag to identify environment owner
+  $root_volume_size_GB,            # AWS volume size has to be allocated for each cluster node. Root partition on each node will be resized accordingly
   $data_node_quantity,             # Number of data nodes that will be deployed by cloudera director
   $data_node_quantity_min_allowed, # Minimum number of instances required to set up the cluster.
+  $data_node_instance_type,        # AWS instance type for data node
+  $cloudera_manager_instance_type, # AWS instance type for Cloudera Manager
+  $master_node_instance_type,      # AWS instance type for master node
+  $aws_ami,                        # AWS AMI type for all cluster nodes
   $user_home_path,                 # Home path on machine where cloudera director client deployed
   $cluster_deployment_timeout_sec  # Cluster deployment timeout. It has to be changed depends on cluster size.
 ) {
