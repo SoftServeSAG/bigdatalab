@@ -84,22 +84,33 @@
 
 Cluster is deployed to AWS by Cloudera director client tool. It is installed to AWS instance as a 'cloudera_director_client' terraform resource.
 
-
 Before starting a deployment, cluster can be customized depending on specific needs.
-The following properties were extracted to 'common.yaml' configuration file.
+A default cluster presets were extracted to 'hiera/hieradata/common.yaml-[small|medium|large]' configuration files.
 
-Property | Description | Recommended Values
----|---|---
-*profiles::cloudera_director_client ::deploy_cluster* | When false, cluster won't be deployed to AWS. Otherwise it will. Set to false if you don't want to deploy cluster and to manage it outside the project | true
-*profiles::cloudera_director_client ::root_volume_size_GB* | Size in GB that can be allocated for each instance in the cluster | 100
-*profiles::cloudera_director_client ::data_node_quantity* | Number of instances deployed on AWS and used in data nodes roles. Minimum recommended 3 | 3 
-*profiles::cloudera_director_client ::data_node_quantity_min_allowed* | Minimal number of cluster data nodes allowed to be deployed to AWS. In case the number of instances can not be reached, cluster deployment will fail | 3
-*profiles::cloudera_director_client ::data_node_instance_type* | AWS instance type for data nodes to be deployed  | 't2.medium'
-*profiles::cloudera_director_client ::cloudera_manager_instance_type* | AWS instance type for Cloudera Manager to be deployed | 't2.large'
-*profiles::cloudera_director_client ::master_node_instance_type* | AWS instance type for master cluster services to be run on | 'm4.2xlarge'
-*profiles::cloudera_director_client ::aws_ami* | AWS image to be used for each cluster instance | 'ami-3218595b'
-*profiles::cloudera_director_client ::cluster_deployment_timeout_sec* | Cluster deployment timeout in seconds. In order of increasing number of nodes, timeout has to be also increased | 7200
+Mentioned properties described in the table below. 
 
+Property | Description | Small | Medium | Large
+---|---|---|---|---
+*profiles::cloudera_director_client ::deploy_cluster* | When false, cluster won't be deployed to AWS. Otherwise it will. Set to false if you don't want to deploy cluster and to manage it outside the project | false | false | false 
+*profiles::cloudera_director_client ::root_volume_size_GB* | Size in GB that can be allocated for each instance in the cluster | 50 | 100 | 
+*profiles::cloudera_director_client ::data_node_quantity* | Number of instances deployed on AWS and used in data nodes roles. Minimum recommended 3 | 1 | 3 |  
+*profiles::cloudera_director_client ::data_node_quantity_min_allowed* | Minimal number of cluster data nodes allowed to be deployed to AWS. In case the number of instances can not be reached, cluster deployment will fail | 1 | 3 | 
+*profiles::cloudera_director_client ::data_node_instance_type* | AWS instance type for data nodes to be deployed  | 't2.medium' | t2.medium |
+*profiles::cloudera_director_client ::cloudera_manager_instance_type* | AWS instance type for Cloudera Manager to be deployed | 't2.large' | 't2.large' | 
+*profiles::cloudera_director_client ::master_node_instance_type* | AWS instance type for master cluster services to be run on | t2.large | 'm4.2xlarge' |  
+*profiles::cloudera_director_client ::aws_ami* | AWS image to be used for each cluster instance | 'ami-3218595b' | 'ami-3218595b' | 'ami-3218595b'
+*profiles::cloudera_director_client ::cluster_deployment_timeout_sec* | Cluster deployment timeout in seconds. In order of increasing number of nodes, timeout has to be also increased | 7200 | 7200 | 
+
+#####How to use a Cloudera Manager UI
+
+After completion a Terraform environment applying stage, cluster can be accessed with Cloudera Manager (CM) UI.
+To open CM UI locate CM IP address in Terraform output and open the following URL in a browser:
+
+http://ClouderaManagerIP:7180
+
+To login into CM UI use: 
+- username: 'admin' 
+- password: 'admin'
 
 #####Managing The Cluster outside of the puppet based project.
 
