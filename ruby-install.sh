@@ -46,6 +46,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
      ruby -v
   fi
 
+  fi
 
   echo "Installing required Gems"
   OLD_DIR=$(pwd)
