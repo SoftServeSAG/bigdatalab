@@ -14,8 +14,16 @@
    - [Data Sources](#data-sources)
    - [Service Discovering](#service-discovering)
 - [Tested OS](#tested-os)
-- [Deployment guide](#deployment-guide)   
-- [Cloudera cluster management](#cloudera-cluster-management)
+- [Deployment guide](#deployment-guide) 
+   - [Deploying Cluster](#deploying-cluster)
+   - [Destroying Cluster](#destroying-cluster)
+   - [Cloudera Cluster Deployment](#cloudera-cluster-deployment)
+      - [Automatic Deployment](#automatic-deployment)
+      - [Manual Deployment and Configuration](#manual-deployment-and-configuration)
+      - [Cloudera Cluster Services](#cloudera-cluster-services)
+      - [Cloudera Manager UI](#cloudera-manager-ui)
+
+
 
 ##Overview
 
@@ -76,7 +84,7 @@ The below diagram represents proposed logical structure of the target system bas
 
 ###Configuration Size:
 - [ ] Small
-- [x] (MVP) Medium
+- [x] Medium
 - [ ] Large
 
 ###Data Sources:
@@ -172,7 +180,9 @@ To destroy Big Data Lab cluster, run following command:
    terraform destroy
    ```
 
-##Cloudera cluster management
+###Cloudera Cluster Deployment
+
+#### Automatic Deployment
 
 Cluster is deployed to AWS by Cloudera director client tool. It is installed to AWS instance as a 'cloudera_director_client' terraform resource.
 
@@ -193,22 +203,12 @@ Property | Description | Small | Medium | Large
 *profiles::cloudera_director_client ::aws_ami* | AWS image to be used for each cluster instance | ami-3218595b | ami-3218595b | ami-3218595b
 *profiles::cloudera_director_client ::cluster_deployment_timeout_sec* | Cluster deployment timeout in seconds. In order of increasing number of nodes, timeout has to be also increased | 7200 | 7200 | 7200
 
-#####How to use a Cloudera Manager UI
-
-After completion a Terraform environment applying stage, cluster can be accessed with Cloudera Manager (CM) UI.
-To open CM UI locate CM IP address in Terraform output and open the following URL in a browser:
-
-http://ClouderaManagerIP:7180
-
-To login into CM UI use: 
-- username: 'admin' 
-- password: 'admin'
-
-#####Managing The Cluster outside of the puppet based project.
+#### Manual Deployment and Configuration
+Follow below steps if you don't want Cloudera CDH to be automatically deployed during Big Data Lab cluster deployment:
 
 Before project deployment set *profiles::cloudera_director_client::deploy_cluster* property to *false*  (false by default)
 
-######To manage cluster:
+To manually create (or change) cluster:
 1. Connect by ssh to the resource 'cloudera_director_client' created by terraform. 
 2. Locate 'cloudera-director-cluster.conf' configuration file. (Default path is '/home/ec2-user')
 3. Go to the configuration file's directory and modify the configuration.
@@ -232,11 +232,12 @@ Before project deployment set *profiles::cloudera_director_client::deploy_cluste
  ```
  cloudera-director status cloudera-director-cluster.conf
  ```
+ 
+#### Cloudera Cluster Services
 
-#####Services that are running on cluster instances.
+1. Edge node: Cloudera Manager runs on a separate edge-node instance.
 
-1. Cloudera Manager services on separate instance.
-2. On master nodes:
+2. Master node:
  - HDFS 
  - YARN
  - ZOOKEEPER
@@ -244,7 +245,20 @@ Before project deployment set *profiles::cloudera_director_client::deploy_cluste
  - HUE
  - OOZIE
  - IMPALA
-3. On slave nodes:
+
+3. Slave node(s):
  - HDFS 
  - YARN
  - IMPALA
+
+#### Cloudera Manager UI
+
+After completion a Terraform environment applying stage, cluster can be accessed with Cloudera Manager (CM) UI.
+To open CM UI locate CM IP address in Terraform output and open the following URL in a browser:
+
+http://ClouderaManagerIP:7180
+
+To login into CM UI use: 
+- username: 'admin' 
+- password: 'admin'
+
