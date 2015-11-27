@@ -1,20 +1,92 @@
 #### Table of Contents
-1. [Overview](#overview)
-2. [Architecture](#architecture)
-3. [Roadmap](#roadmap)
-4. [Tested OS](#tested-os)
-5. [Deployment guide](#deployment-guide)   
-6. [Cloudera cluster management](#cloudera-cluster-management)
+- [Overview](#overview)
+   - [Marketecture](#marketecture)
+- [Architecture](#architecture)
+   - [Architecture Drivers](#architecture-drivers)
+   - [Lambda Architecture](#lambda-architecture)
+   - [Data Flow](#data-flow)
+- [Roadmap](#roadmap)
+   - [Components](#components)
+   - [Client OS Support](#client-os-support)
+   - [Guest OS Support)](#guest-os-support)
+   - [Platform Support](#platforms-support)
+   - [Configuration Size](#configuration-size)
+   - [Data Sources](#data-sources)
+   - [Service Discovering](#service-discovering)
+- [Tested OS](#tested-os)
+- [Deployment guide](#deployment-guide)   
+- [Cloudera cluster management](#cloudera-cluster-management)
 
 ##Overview
+
 ###Marketecture
+![Image](../vkrop/misc/img/Marketecture.png?raw=true)
+
 
 ##Architecture
 ###Architecture Drivers
+![Image](../vkrop/misc/img/ArchitectureDrivers.png?raw=true)
 
-###Test
+### Lambda Architecture
+
+**Overview**
+
+As part of the design process, one of the first tasks is to create an overall logical structure for the system. To achieve this, it is generally not necessary to re-invent the wheel, but rather to use one particular type of design concept: a reference architecture. A reference architecture is a blueprint for structuring an application. For Big Data Analytics systems we distinguish five reference architectures:
+
+*   Traditional Relational
+*   Extended Relational
+*   Non-Relational
+*   Lambda Architecture (Hybrid)
+*   Data Refinery (Hybrid)
+
+**Design Rational**
+
+From the provided reference architectures [Lambda Architecture](http://lambda-architecture.net/) promises the largest number of benefits, such as access to real-time and historical data at the same time. The parallel layers provide “complexity isolation”, meaning that design decisions and development of each layer can be done independently – which corresponds to “swim lanes” principle that increase fault-tolerance and scalability (which is true for a system and for parallelizing development tasks).
+
+The below diagram represents proposed logical structure of the target system based on Lambda Architecture:
+
+![Image](../vkrop/misc/img/LambdaArchitecture.png?raw=true)
+
+### Data Flow
+![Image](../vkrop/misc/img/DataFlow.png?raw=true)
 
 ##Roadmap
+###Components:
+- [x] LogGenerator
+- [ ] Flume
+- [x] ElasticSearch 1.7
+- [ ] Elastic Search Automatic Schema Creation
+- [x] Cloudera Director (Hadoop Cluster Deployment)
+- [ ] Impala Schema Creation
+- [x] Kibana
+- [ ] Kibana: Automatic Pre-defined Dashboards Import
+ 
+###Client OS Support:
+- [x] Linux
+- [x] MacOS
+
+###Guest OS Support:
+- [x] CentOS
+- [ ] RedHat
+
+###Platform Support:
+- [x] Amazon Web Services
+- [ ] VMWare vShpere / ESX
+- [ ] OpenStack
+
+###Configuration Size:
+- [ ] Small
+- [x] (MVP) Medium
+- [ ] Large
+
+###Data Sources:
+- [x] Log Files (HTTP, Error)
+- [ ] Performance metrics
+- [ ] IoT
+
+###Service Discovering:
+- [x] Buil-in DNS with hostname self-registering
+- [ ] Consul
 
 ##Tested OS
 Below is a list of client OS which can be used to deploy solution from:
@@ -22,7 +94,10 @@ Below is a list of client OS which can be used to deploy solution from:
 - Ubuntu 14 (64 bit)
 - OSX
 
-##Deployment guide
+##Deployment Guide
+###Deploying Cluster
+Use below steps in order to create Big Data Lab cluster:
+
 1. Run:
 
    ```
@@ -88,8 +163,10 @@ Below is a list of client OS which can be used to deploy solution from:
    ```
    cloudera-director terminate {path to cluster configuration file}
    ```
+###Destroying Cluster
+To destroy Big Data Lab cluster, run following command:
 
-12. To destroy instances, run:
+1. To destroy instances, run:
      
    ```
    terraform destroy
