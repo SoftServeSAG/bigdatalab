@@ -1,13 +1,111 @@
 #### Table of Contents
-1. [Tested OS](#tested-os)
-2. [Deployment guide](#deployment-guide)   
-3. [Cloudera cluster management](#cloudera-cluster-management)
+- [Overview](#overview)
+   - [Marketecture](#marketecture)
+- [Architecture](#architecture)
+   - [Architecture Drivers](#architecture-drivers)
+   - [Lambda Architecture](#lambda-architecture)
+   - [Data Flow](#data-flow)
+- [Roadmap](#roadmap)
+   - [Components](#components)
+   - [Client OS Support](#client-os-support)
+   - [Guest OS Support](#guest-os-support)
+   - [Platform Support](#platforms-support)
+   - [Configuration Size](#configuration-size)
+   - [Data Sources](#data-sources)
+   - [Service Discovering](#service-discovering)
+- [Tested OS](#tested-os)
+- [Deployment guide](#deployment-guide) 
+   - [Deploying Cluster](#deploying-cluster)
+   - [Destroying Cluster](#destroying-cluster)
+   - [Cloudera Cluster Deployment](#cloudera-cluster-deployment)
+      - [Automatic Deployment](#automatic-deployment)
+      - [Manual Deployment and Configuration](#manual-deployment-and-configuration)
+      - [Cloudera Cluster Services](#cloudera-cluster-services)
+      - [Cloudera Manager UI](#cloudera-manager-ui)
+
+
+
+##Overview
+
+###Marketecture
+![Image](../vkrop/misc/img/Marketecture.png?raw=true)
+
+
+##Architecture
+###Architecture Drivers
+![Image](../vkrop/misc/img/ArchitectureDrivers.png?raw=true)
+
+### Lambda Architecture
+
+**Overview**
+
+As part of the design process, one of the first tasks is to create an overall logical structure for the system. To achieve this, it is generally not necessary to re-invent the wheel, but rather to use one particular type of design concept: a reference architecture. A reference architecture is a blueprint for structuring an application. For Big Data Analytics systems we distinguish five reference architectures:
+
+*   Traditional Relational
+*   Extended Relational
+*   Non-Relational
+*   Lambda Architecture (Hybrid)
+*   Data Refinery (Hybrid)
+
+**Design Rational**
+
+From the provided reference architectures [Lambda Architecture](http://lambda-architecture.net/) promises the largest number of benefits, such as access to real-time and historical data at the same time. The parallel layers provide “complexity isolation”, meaning that design decisions and development of each layer can be done independently – which corresponds to “swim lanes” principle that increase fault-tolerance and scalability (which is true for a system and for parallelizing development tasks).
+
+The below diagram represents proposed logical structure of the target system based on Lambda Architecture:
+
+![Image](../vkrop/misc/img/LambdaArchitecture.png?raw=true)
+
+### Data Flow
+![Image](../vkrop/misc/img/DataFlow.png?raw=true)
+
+##Roadmap
+###Components:
+- [x] LogGenerator
+- [ ] Flume
+- [x] ElasticSearch 1.7
+- [ ] Elastic Search Automatic Schema Creation
+- [x] Cloudera Director (Hadoop Cluster Deployment)
+- [ ] Impala Schema Creation
+- [x] Kibana
+- [ ] Kibana: Automatic Pre-defined Dashboards Import
+ 
+###Client OS Support:
+- [x] Linux
+- [x] MacOS
+
+###Guest OS Support:
+- [x] CentOS
+- [ ] RedHat
+
+###Platform Support:
+- [x] Amazon Web Services
+- [ ] VMWare vShpere / ESX
+- [ ] OpenStack
+
+###Configuration Size:
+- [ ] Small
+- [x] Medium
+- [ ] Large
+
+###Data Sources:
+- [x] Log Files (HTTP, Error)
+- [ ] Performance metrics
+- [ ] IoT
+
+###Service Discovering:
+- [x] Buil-in DNS with hostname self-registering
+- [ ] Consul
 
 ##Tested OS
+Below is a list of client OS which can be used to deploy solution from:
 - CentOS 6/7 (64 bit)
 - Ubuntu 14 (64 bit)
+- OSX
 
-##Deployment guide
+##Deployment Guide
+###Deploying Cluster
+Use below steps in order to create Big Data Lab cluster:
+
 1. Run:
 
    ```
@@ -73,14 +171,18 @@
    ```
    cloudera-director terminate {path to cluster configuration file}
    ```
+###Destroying Cluster
+To destroy Big Data Lab cluster, run following command:
 
-12. To destroy instances, run:
+1. To destroy instances, run:
      
    ```
    terraform destroy
    ```
 
-##Cloudera cluster management
+###Cloudera Cluster Deployment
+
+#### Automatic Deployment
 
 Cluster is deployed to AWS by Cloudera director client tool. It is installed to AWS instance as a 'cloudera_director_client' terraform resource.
 
@@ -101,22 +203,12 @@ Property | Description | Small | Medium | Large
 *profiles::cloudera_director_client ::aws_ami* | AWS image to be used for each cluster instance | ami-3218595b | ami-3218595b | ami-3218595b
 *profiles::cloudera_director_client ::cluster_deployment_timeout_sec* | Cluster deployment timeout in seconds. In order of increasing number of nodes, timeout has to be also increased | 7200 | 7200 | 7200
 
-#####How to use a Cloudera Manager UI
-
-After completion a Terraform environment applying stage, cluster can be accessed with Cloudera Manager (CM) UI.
-To open CM UI locate CM IP address in Terraform output and open the following URL in a browser:
-
-http://ClouderaManagerIP:7180
-
-To login into CM UI use: 
-- username: 'admin' 
-- password: 'admin'
-
-#####Managing The Cluster outside of the puppet based project.
+#### Manual Deployment and Configuration
+Follow below steps if you don't want Cloudera CDH to be automatically deployed during Big Data Lab cluster deployment:
 
 Before project deployment set *profiles::cloudera_director_client::deploy_cluster* property to *false*  (false by default)
 
-######To manage cluster:
+To manually create (or change) cluster:
 1. Connect by ssh to the resource 'cloudera_director_client' created by terraform. 
 2. Locate 'cloudera-director-cluster.conf' configuration file. (Default path is '/home/ec2-user')
 3. Go to the configuration file's directory and modify the configuration.
@@ -140,11 +232,12 @@ Before project deployment set *profiles::cloudera_director_client::deploy_cluste
  ```
  cloudera-director status cloudera-director-cluster.conf
  ```
+ 
+#### Cloudera Cluster Services
 
-#####Services that are running on cluster instances.
+1. Edge node: Cloudera Manager runs on a separate edge-node instance.
 
-1. Cloudera Manager services on separate instance.
-2. On master nodes:
+2. Master node:
  - HDFS 
  - YARN
  - ZOOKEEPER
@@ -152,7 +245,20 @@ Before project deployment set *profiles::cloudera_director_client::deploy_cluste
  - HUE
  - OOZIE
  - IMPALA
-3. On slave nodes:
+
+3. Slave node(s):
  - HDFS 
  - YARN
  - IMPALA
+
+#### Cloudera Manager UI
+
+After completion a Terraform environment applying stage, cluster can be accessed with Cloudera Manager (CM) UI.
+To open CM UI locate CM IP address in Terraform output and open the following URL in a browser:
+
+http://ClouderaManagerIP:7180
+
+To login into CM UI use: 
+- username: 'admin' 
+- password: 'admin'
+
