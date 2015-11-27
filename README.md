@@ -8,7 +8,7 @@
 - [Roadmap](#roadmap)
    - [Components](#components)
    - [Client OS Support](#client-os-support)
-   - [Guest OS Support)](#guest-os-support)
+   - [Guest OS Support](#guest-os-support)
    - [Platform Support](#platforms-support)
    - [Configuration Size](#configuration-size)
    - [Data Sources](#data-sources)
