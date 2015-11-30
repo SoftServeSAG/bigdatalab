@@ -26,7 +26,7 @@
 
 
 ##Overview
-Big Data Lab is an open-source project created originally in SoftServe Inc. to serve as an accelerator for big data projects and to be an easy to deploy and use environment for education, prototyping, PoC, performance testing and other purposes. The main idea which lies in roots of Big Data Lab is a Log and Metrics processing system which allows certain set of users to use both raw and aggregated log and performance metrics data in their daily tasks.
+Big Data Lab is an open-source project created originally in SoftServe Inc. to serve as an accelerator for big data projects and to be an easy to deploy and use environment for education, prototyping, PoC, performance testing and other purposes. The main idea which lies in the root of Big Data Lab is a Log and Metrics processing system which allows certain set of users to use both raw and aggregated log and performance metrics data in their daily tasks.
 
 ###Marketecture
 Diagram below shows main sources of data (log and performance metrics data being collected from web servers), as well as 3 types of analytics produced based on this data and 3 types of users using this data.
