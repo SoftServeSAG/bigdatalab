@@ -9,7 +9,7 @@
    - [Components](#components)
    - [Client OS Support](#client-os-support)
    - [Guest OS Support](#guest-os-support)
-   - [Platform Support](#platforms-support)
+   - [Platform Support](#platform-support)
    - [Configuration Size](#configuration-size)
    - [Data Sources](#data-sources)
    - [Service Discovering](#service-discovering)
@@ -26,14 +26,17 @@
 
 
 ##Overview
+Big Data Lab is an open-source project created originally in SoftServe Inc. to serve as an accelerator for big data projects and to be an easy to deploy and use environment for education, prototyping, PoC, performance testing and other purposes. The main idea which lies in roots of Big Data Lab is a Log and Metrics processing system which allows certain set of users to use both raw and aggregated log and performance metrics data in their daily tasks.
 
 ###Marketecture
-![Image](../vkrop/misc/img/Marketecture.png?raw=true)
+Diagram below shows main sources of data (log and performance metrics data being collected from web servers), as well as 3 types of analytics produced based on this data and 3 types of users using this data.
+![Image](../develop/misc/img/Marketecture.png?raw=true)
 
 
 ##Architecture
 ###Architecture Drivers
-![Image](../vkrop/misc/img/ArchitectureDrivers.png?raw=true)
+Below is a set of main architecture drivers which influences architecture and implementation of the project. We've used Carnegie Mellon Software Engineering Insitute's ADD (Attribute Driven Design) methodology in building solution architecture.
+![Image](../develop/misc/img/ArchitectureDrivers.png?raw=true)
 
 ### Lambda Architecture
 
@@ -53,10 +56,10 @@ From the provided reference architectures [Lambda Architecture](http://lambda-ar
 
 The below diagram represents proposed logical structure of the target system based on Lambda Architecture:
 
-![Image](../vkrop/misc/img/LambdaArchitecture.png?raw=true)
+![Image](../develop/misc/img/LambdaArchitecture.png?raw=true)
 
 ### Data Flow
-![Image](../vkrop/misc/img/DataFlow.png?raw=true)
+![Image](../develop/misc/img/DataFlow.png?raw=true)
 
 ##Roadmap
 ###Components:
