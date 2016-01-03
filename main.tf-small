@@ -63,7 +63,7 @@ resource "aws_security_group" "security_group" {
 }
 
 resource "aws_key_pair" "key" {
-  key_name = "${var.key_name}" 
+  key_name = "${var.key_name}"
   public_key = "${var.public_key}"
 }
 
@@ -80,7 +80,7 @@ EOF
 
 # T.B.D. Use default var.os_version instead of centos-7.0
 resource "aws_instance" "node_log_generator" {
-  depends_on = ["null_resource.null_pre_deployment"]
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_log"]
 
   ami = "${lookup(var.amis, lookup(var.os_versions, "log_generator"))}"
   instance_type = "${lookup(var.instance_types, "log_generator_flume")}"
@@ -182,6 +182,81 @@ resource "aws_instance" "node_elasticsearch" {
   count = 1
 }
 
+resource "aws_instance" "flume_collector" {
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_collector"]
+
+  ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
+  instance_type = "${lookup(var.instance_types, "flume")}"
+  security_groups = ["${var.security_group}"]
+  key_name = "${var.key_name}"
+
+  tags = {
+    Name = "flume_collector"
+    App = "${var.tag_app}"
+    Env = "${var.tag_env}"
+    Owner = "${var.tag_owner}"
+  }
+
+  connection {
+    type = "ssh"
+    user = "${lookup(var.users, lookup(var.amis, lookup(var.os_versions, "default")))}"
+    key_file = "${var.key_file}"
+  }
+
+  provisioner "file" {
+    source = "puppet"
+    destination = "${var.puppet_path}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export PUPPET_ROLE=flume_collector",
+      "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
+      "${var.puppet_path}/puppet/puppet.sh"
+    ]
+  }
+
+  count = 1
+}
+
+resource "aws_instance" "flume_agent" {
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_agent"]
+
+  ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
+  instance_type = "${lookup(var.instance_types, "flume")}"
+  security_groups = ["${var.security_group}"]
+  key_name = "${var.key_name}"
+
+  tags = {
+    Name = "flume_agent"
+    App = "${var.tag_app}"
+    Env = "${var.tag_env}"
+    Owner = "${var.tag_owner}"
+  }
+
+  connection {
+    type = "ssh"
+    user = "${lookup(var.users, lookup(var.amis, lookup(var.os_versions, "default")))}"
+    key_file = "${var.key_file}"
+  }
+
+  provisioner "file" {
+    source = "puppet"
+    destination = "${var.puppet_path}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export PUPPET_ROLE=flume_agent",
+      "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
+      "${var.puppet_path}/puppet/puppet.sh"
+    ]
+  }
+
+  count = 1
+}
+
+
 resource "aws_instance" "cloudera_director_client" {
   depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config"]
 
@@ -224,9 +299,49 @@ resource "aws_instance" "cloudera_director_client" {
   count = 1
 }
 
+resource "null_resource" "null_dynamic_config_collector" {
+  depends_on = ["aws_instance.node_elasticsearch",
+                "aws_instance.cloudera_director_client"]
+  provisioner "local-exec" {
+    command = <<EOF
+FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
+printf 'profiles::flume_collector::elasticsearch_node: '\''${aws_instance.node_elasticsearch.private_ip}'\''\n' >> $FILE_PATH
+printf 'profiles::flume_collector::hdfs_namenode: '\''${aws_instance.cloudera_director_client.private_ip}'\''\n' >> $FILE_PATH
+EOF
+  }
+}
+
+resource "null_resource" "null_dynamic_config_agent" {
+  depends_on = ["aws_instance.flume_collector",
+                "aws_instance.node_elasticsearch",
+                "aws_instance.cloudera_director_client"]
+  provisioner "local-exec" {
+    command = <<EOF
+FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
+printf 'profiles::flume_agent::flume_collector_node: '\''${aws_instance.flume_collector.private_ip}'\''\n' >> $FILE_PATH
+EOF
+  }
+}
+
+resource "null_resource" "null_dynamic_config_log" {
+  depends_on = ["aws_instance.flume_agent",
+                "aws_instance.flume_collector",
+                "aws_instance.node_elasticsearch",
+                "aws_instance.cloudera_director_client"]
+  provisioner "local-exec" {
+    command = <<EOF
+FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
+printf 'profiles::log_generator::flume_agent_node: '\''${aws_instance.flume_agent.private_ip}'\''\n' >> $FILE_PATH
+EOF
+  }
+}
+
+
 resource "null_resource" "null_post_deployment" {
   depends_on = ["aws_instance.node_log_generator",
                 "aws_instance.node_elasticsearch",
+                "aws_instance.flume_collector",
+                "aws_instance.flume_agent",
                 "aws_instance.cloudera_director_client"]
 
   provisioner "local-exec" {
@@ -250,3 +365,12 @@ output "public_ip_node_elasticsearch" {
 output "public_ip_node_cloudera_director" {
   value = "${join(",", aws_instance.cloudera_director_client.*.public_ip)}"
 }
+
+output "public_ip_node_flume_collector" {
+  value = "${join(",", aws_instance.flume_collector.*.public_ip)}"
+}
+
+output "public_ip_node_flume_agent" {
+  value = "${join(",", aws_instance.flume_agent.*.public_ip)}"
+}
+
