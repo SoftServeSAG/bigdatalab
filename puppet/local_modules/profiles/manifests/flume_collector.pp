@@ -9,21 +9,21 @@ class profiles::flume_collector inherits profiles::linux {
 
     $clusterName = hiera( 'profiles::elasticsearch::cluster_name', 'bigdatalab' )
     $flume_collector_node = $::ipaddress
-    $hdfs_namenode = hiera( 'profiles::flume_collector::hdfs_namenode', 'localhost' )
+    $hadoop_namenode = hiera( 'profiles::flume_collector::hadoop_namenode', 'localhost' )
     $elasticsearch_node = hiera( 'profiles::flume_collector::elasticsearch_node', 'localhost' )
 
     class {'flume::collector':
       channels => {  access_elasticsearch_channel => { 'type' => 'memory',
-                                         'capacity' => '1000'
+                                         'capacity' => '2000'
                                        },
                      error_elasticsearch_channel  => { 'type' => 'memory',
-                                         'capacity' => '1000'
+                                         'capacity' => '2000'
                                        },
                      access_hdfs_channel => { 'type' => 'memory',
-                                         'capacity' => '1000'
+                                         'capacity' => '2000'
                                        },
                      error_hdfs_channel  => { 'type' => 'memory',
-                                         'capacity' => '1000'
+                                         'capacity' => '2000'
                                        }
                   },
                      # Describe/configure Avro source for access log
@@ -102,7 +102,7 @@ class profiles::flume_collector inherits profiles::linux {
                                                   },
                      # HDFS sink for access log
                      access_hdfs_sink          => { 'type' => 'hdfs',
-                                                    'hdfs.path' => "hdfs://${hdfs_namenode}:8020/flume/logs/access/%y-%m-%d/%H%M",
+                                                    'hdfs.path' => "hdfs://${hadoop_namenode}:8020/flume/logs/access/%y-%m-%d/%H%M",
                                                     'hdfs.fileType' => 'DataStream',
                                                     'hdfs.filePrefix' => 'access-',
                                                     'hdfs.fileSuffix' => '.avro',
@@ -121,7 +121,7 @@ class profiles::flume_collector inherits profiles::linux {
                                                   },
                      # HDFS sink for error log
                      error_hdfs_sink           => { 'type' => 'hdfs',
-                                                    'hdfs.path' => "hdfs://${hdfs_namenode}:8020/flume/logs/error/%y-%m-%d/%H%M",
+                                                    'hdfs.path' => "hdfs://${hadoop_namenode}:8020/flume/logs/error/%y-%m-%d/%H%M",
                                                     'hdfs.fileType' => 'DataStream',
                                                     'hdfs.filePrefix' => 'error-',
                                                     'hdfs.fileSuffix' => '.avro',
