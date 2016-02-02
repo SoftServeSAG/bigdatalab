@@ -4,6 +4,7 @@
 
 class profiles::flume_agent inherits profiles::linux {
     include bigtop_repo
+    Class['bigtop_repo'] -> Class['flume::agent']
 
     $flume_agent_node   = $::ipaddress
     $flume_collector_node = hiera( 'profiles::flume_agent::flume_collector_node', 'localhost' )
