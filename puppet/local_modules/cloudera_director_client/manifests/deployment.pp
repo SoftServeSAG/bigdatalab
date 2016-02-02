@@ -3,7 +3,7 @@
 #
 define cloudera_director_client::deployment (
   $deploy_cluster = false,         # [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. Set to false by default
-  $cd_version =  '1.5.1',          # Cloudera Director (CD) version
+  $cd_version =  '2',          # Cloudera Director (CD) version
   $redhat_version = '6',           # CD supported RedHat or CentOS version
   $instance_name_prefix,           # Prefix that will be added by CD during instance deployment
   $aws_access_key_id,
@@ -48,6 +48,16 @@ define cloudera_director_client::deployment (
     require => Yumrepo["cloudera-director"]
   }
 
+  package { "cloudera-director-server":
+    ensure  => installed,
+    require => Yumrepo["cloudera-director"]
+  }
+
+  service { "cloudera-director-server":
+    ensure  => running,
+    require => Package["cloudera-director-server"]
+  }
+
   # Java has to be installed from cloudera repositories. (Based on Cloudera reccomendtions)
   package { "oracle-j2sdk1.7":
     ensure  => installed,
@@ -55,15 +65,18 @@ define cloudera_director_client::deployment (
   }
 
   file { $cloudera_director_configs_path:
-    require => Package['cloudera-director-client'],
-    content => template('cloudera_director_client/cloudera-director.conf.erb'),
+    require => [ Package['cloudera-director-client'], Package["cloudera-director-server"] ],
+    content => template('cloudera_director_client/cloudera-director.conf.erb')
   }
 
   if $deploy_cluster {
     exec { 'start-cluster-deployment':
-      command   => "cloudera-director bootstrap $cloudera_director_configs_path",
-      timeout   => $cluster_deployment_timeout_sec,
-      logoutput => true
+      command   => "cloudera-director bootstrap-remote $cloudera_director_configs_path --lp.remote.username=admin --lp.remote.password=admin --lp.remote.hostAndPort=localhost:7189",
+      timeout   => 0,
+      try_sleep => 180,
+      tries     => 3,
+      logoutput => true,
+      require   => File[$cloudera_director_configs_path]
     }
   } else {
     warning('Cluster deployment is turned off by default. To deploy cluster to AWS with Cloudera Director Client set deploy_cluster parameter to true')
