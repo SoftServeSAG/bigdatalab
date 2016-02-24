@@ -4,10 +4,6 @@ class flume::collector($sources = [], $sinks = [], $channels = []) {
     $elk_version  = hiera('profiles::elasticsearch::es_version', '1.7.1')
     $lucene_core_version = hiera('profiles::elasticsearch::lucene_core_version', '4.10.4')
 
-    package { 'flume-agent':
-        ensure => latest,
-    }
-
     maven { "${flume_lib}/elasticsearch.jar":
         groupid    => 'org.elasticsearch',
         artifactid => 'elasticsearch',
@@ -23,17 +19,5 @@ class flume::collector($sources = [], $sinks = [], $channels = []) {
     file { '/etc/flume/conf/flume-collector.conf':
         content => template('flume/flume.conf'),
         require => Package['flume-agent'],
-    }
-
-    file { '/etc/flume/conf/flume.conf':
-        ensure  => absent
-    }
-
-    service { 'flume-agent':
-        ensure     => running,
-        require    => [Package['flume-agent'], File['/etc/flume/conf/flume-collector.conf'], Maven["${flume_lib}/elasticsearch.jar"]],
-        subscribe  => [File['/etc/flume/conf/flume-collector.conf'], Maven["${flume_lib}/elasticsearch.jar"]],
-        hasstatus  => true,
-        hasrestart => true,
     }
 }
