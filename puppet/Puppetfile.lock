@@ -16,7 +16,7 @@ FORGE
     maestrodev-maven (1.4.0)
       maestrodev-wget (>= 1.7.1)
     maestrodev-wget (1.7.1)
-    evenup-kibana (2.3.0)
+    evenup-kibana (2.99.0)
 
 PATH
   remote: local_modules/cloudera_director_client
@@ -45,7 +45,7 @@ PATH
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
       softservesag-jdk_oracle (>= 0)
       ghoneycutt-selinux (>= 1.1.0)
-      evenup-kibana (>= 2.3.0)
+      evenup-kibana (>= 2.9.0)
 
 PATH
   remote: local_modules/roles
