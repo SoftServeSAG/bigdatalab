@@ -4,18 +4,22 @@
 
 class profiles::flume_agent inherits profiles::linux {
     include bigtop_repo
-    Class['bigtop_repo'] -> Class['flume::agent']
+    include flume::install
+    include flume::service
+    Class['bigtop_repo'] -> Class['flume::install'] -> Class['flume::agent'] -> Class['flume::service']
 
     $flume_agent_node   = $::ipaddress
-    $flume_collector_node = hiera( 'profiles::flume_agent::flume_collector_node', 'localhost' )
+    $flume_collector_node = hiera( 'profiles::flume_agent::flume_collector_node', $::ipaddress )
 
     class {'flume::agent':
                      # Use a channel which buffers events in memory
       channels => {  access_channel => { 'type' => 'memory',
-                                         'capacity' => '1000'
+                                         'capacity' => '2000',
+                                         'transactionCapactiy' => '200'
                                        },
                      error_channel  => { 'type' => 'memory',
-                                         'capacity' => '1000'
+                                         'capacity' => '2000',
+                                         'transactionCapactiy' => '200'
                                        }
                   },
                      # NetCat TCP source

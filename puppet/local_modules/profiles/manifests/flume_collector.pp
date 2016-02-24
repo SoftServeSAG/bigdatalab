@@ -3,36 +3,43 @@
 #
 
 class profiles::flume_collector inherits profiles::linux {
+    include stdlib
     include maven::maven
     include bigtop_repo
-    Class['maven::maven'] -> Class['bigtop_repo'] -> Class['flume::collector']
+    include flume::install
+    include flume::service
+    Class['maven::maven'] -> Class['bigtop_repo'] -> Class['flume::install'] -> Class['flume::collector'] -> Class['flume::service']
 
+    $deploy_cluster = hiera( 'profiles::cloudera_director_client::deploy_cluster', false )
     $clusterName = hiera( 'profiles::elasticsearch::cluster_name', 'bigdatalab' )
     $flume_collector_node = $::ipaddress
     $hadoop_namenode = hiera( 'profiles::flume_collector::hadoop_namenode', 'localhost' )
     $elasticsearch_node = hiera( 'profiles::flume_collector::elasticsearch_node', 'localhost' )
 
-    class {'flume::collector':
-      channels => {  access_elasticsearch_channel => { 'type' => 'memory',
-                                         'capacity' => '2000'
+    $channels = {  access_elasticsearch_channel => { 'type' => 'memory',
+                                         'capacity' => '2000',
+                                         'transactionCapactiy' => '200'
                                        },
                      error_elasticsearch_channel  => { 'type' => 'memory',
-                                         'capacity' => '2000'
+                                         'capacity' => '2000',
+                                         'transactionCapactiy' => '200'
                                        },
                      access_hdfs_channel => { 'type' => 'memory',
-                                         'capacity' => '2000'
+                                         'capacity' => '2000',
+                                         'transactionCapactiy' => '200'
                                        },
                      error_hdfs_channel  => { 'type' => 'memory',
-                                         'capacity' => '2000'
+                                         'capacity' => '2000',
+                                         'transactionCapactiy' => '200'
                                        }
-                  },
+                  }
                      # Describe/configure Avro source for access log
-      sources  => {  access_avro_source  => { 'type' => 'avro',
+    $sources  = {  access_avro_source  => { 'type' => 'avro',
                                               'bind' => $flume_collector_node,
                                               'port' => '4545',
                                                # ----------- Log event parser -------------
                                                # Apache access log parser
-                                               # Sample: 143.21.52.246 - - [19/Jun/2014:12:15:17 +0000] "GET /test.html HTTP/1.1" 200 341 "-" "Mozilla/5.0 (X11; Linux x86_64; rv:6.0a1) Gecko/20110421 Firefox/6.0a1" 
+                                               # Sample: 143.21.52.246 - - [19/Jun/2014:12:15:17 +0000] "GET /test.html HTTP/1.1" 200 341 "-" "Mozilla/5.0 (X11; Linux x86_64; rv:6.0a1) Gecko/20110421 Firefox/6.0a1"
                                                # regexp for default access log line
                                               'interceptors.access_interceptor.type' => 'regex_extractor',
                                               'interceptors.access_interceptor.regex' => '^([\\d.]+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+) (\\d+) \"([^\"]+)\" \"([^\"]+)\"',
@@ -79,10 +86,10 @@ class profiles::flume_collector inherits profiles::linux {
                                               'channels' => 'error_elasticsearch_channel error_hdfs_channel'
                                             },
 
-                  },
+                  }
                      # ElasticSearch sink for Apache access log
-      sinks    => {  access_elasticsearch_sink => { 'type' => 'org.apache.flume.sink.elasticsearch.ElasticSearchSink',
-                                                    'batchSize' => '100',
+    $sinks    = {  access_elasticsearch_sink => { 'type' => 'org.apache.flume.sink.elasticsearch.ElasticSearchSink',
+                                                    'batchSize' => '50',
                                                     'hostNames' => "${elasticsearch_node}:9300",
                                                     'indexName' => 'apache-logs',
                                                     'clusterName' => "${clusterName}",
@@ -92,7 +99,7 @@ class profiles::flume_collector inherits profiles::linux {
                                                   },
                      # ElasticSearch sink for Apache error log
                      error_elasticsearch_sink  => { 'type' => 'org.apache.flume.sink.elasticsearch.ElasticSearchSink',
-                                                    'batchSize' => '100',
+                                                    'batchSize' => '50',
                                                     'hostNames' => "${elasticsearch_node}:9300",
                                                     'indexName' => 'apache-logs',
                                                     'clusterName' => "${clusterName}",
@@ -139,5 +146,27 @@ class profiles::flume_collector inherits profiles::linux {
                                                     'channel' => 'error_hdfs_channel'
                                                   }
                   }
+
+    validate_hash($channels)
+    validate_hash($sources)
+    validate_hash($sinks)
+
+
+    if $deploy_cluster {
+      notice('Deploying Flume configuration for CDH')
+      $channel = $channels
+      $source  = $sources
+      $sink    = $sinks
+    }
+    else {
+      $channel = delete($channels, ['access_hdfs_channel', 'error_hdfs_channel'])
+      $source  = $sources
+      $sink    = delete($sinks, ['access_hdfs_sink', 'error_hdfs_sink'])
+    }
+
+    class {'flume::collector':
+      channels => $channel,
+      sources  => $source,
+      sinks    => $sink
     }
 }
