@@ -1,0 +1,5 @@
+cloudera-director-python-client==1.5.2
+cm-api==11.0.0
+pywebhdfs==0.4.0
+PyYAML==3.11
+requests==2.9.1
