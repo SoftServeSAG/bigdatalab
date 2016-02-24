@@ -1,14 +1,14 @@
 class log_generator (
 
   $install_dir                    = '/var/lib/log_generator',
-  $apache_access_flume_agent_host = hiera( 'profiles::log_generator::flume_agent_node', '127.0.0.1' ),
+  $apache_access_flume_agent_host = hiera( 'profiles::log_generator::flume_agent_node', $::ipaddress ),
   $apache_access_flume_agent_port = 5001,
   $apache_access_sleep_from       = 0,
   $apache_access_sleep_to         = 5,
   $apache_access_rows_in_batch    = 1000,
   $apache_access_enabled          = true,
 
-  $apache_error_flume_agent_host  = hiera( 'profiles::log_generator::flume_agent_node', '127.0.0.1' ),
+  $apache_error_flume_agent_host  = hiera( 'profiles::log_generator::flume_agent_node', $::ipaddress ),
   $apache_error_flume_agent_port  = 5002,
   $apache_error_sleep_from        = 10,
   $apache_error_sleep_to          = 20,
