@@ -1,0 +1,6 @@
+fixtures:
+  repositories:
+    maven: "git://github.com/maestrodev/puppet-maven.git"
+    wget: "git://github.com/maestrodev/puppet-wget.git"
+  symlinks:
+    flume: "#{source_dir}"

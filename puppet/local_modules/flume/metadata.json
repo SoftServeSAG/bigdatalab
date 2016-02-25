@@ -1,0 +1,21 @@
+{
+  "name": "flume",
+  "version": "0.1.0",
+  "author": "Softserve SAG",
+  "summary": "Install and configures hadoop-flume",
+  "license": "Apache 2.0",
+  "source": "https://github.com/SoftserveSAG/bigdatalab/puppet/local_modules/flume",
+  "project_page": "https://github.com/SoftServeSAG/bigdatalab",
+  "issues_url": "https://github.com/SoftServeSAG/bigdatalab/issues",
+  "operatingsystem_support": [
+    {
+    "operatingsystem":"CentOS",
+    "operatingsystemrelease":[ "6.0", "7.0" ]
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"},
+    {"name":"maestrodev-maven","version_requirement":">= 1.4.0"},
+    {"name":"maestrodev-wget","version_requirement":">= 1.7.1"}
+  ]
+}
