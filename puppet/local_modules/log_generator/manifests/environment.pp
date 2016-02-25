@@ -8,11 +8,10 @@ class log_generator::environment (
     ensure => present
   }
 
-  package { 'nc':
+  package { 'nmap-ncat':
     ensure => present
   }
-
-  package { 'sysstat': 
+ package { 'sysstat':
     ensure => present
   }
 
@@ -21,7 +20,7 @@ class log_generator::environment (
     gid    => 1100
   }
 
-  user { 'log_generator': 
+  user { 'log_generator':
     gid   => 'log_generator',
     home  => $home_dir,
     shell => '/sbin/nologin'
@@ -32,7 +31,7 @@ class log_generator::environment (
     ensure  => directory,
     owner   => 'log_generator',
     group   => 'log_generator',
-    mode    => '775',    
+    mode    => '775',
     source  => 'puppet:///modules/log_generator',
     recurse => true
   }
