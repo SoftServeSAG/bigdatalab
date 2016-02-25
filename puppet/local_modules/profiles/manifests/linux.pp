@@ -40,7 +40,7 @@ class profiles::linux (
   $os_version = $::operatingsystemmajrelease
   $supported_os_versions = $supported_oss[$os]
   validate_array($supported_os_versions)
-  
+
   if !member($supported_os_versions, $os_version) {
     fail("Version ${os_version} of ${os} is not supported")
   }
@@ -51,7 +51,7 @@ class profiles::linux (
   Yumrepo { timeout => $repo_timeout }
 
   class { '::selinux':
-    mode => 'disabled'
+    mode => 'permissive'
   }
 
 
