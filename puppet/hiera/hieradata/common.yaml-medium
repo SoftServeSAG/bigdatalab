@@ -1,7 +1,7 @@
 ---
 profiles::linux::supported_oss:
   CentOS:
-    - '7' 
+    - '7'
     - '6'
 profiles::linux::repo_timeout: 300
 profiles::linux::exec_path:
@@ -12,8 +12,7 @@ profiles::linux::exec_path:
 profiles::elasticsearch::cluster_name: 'bigdatalab'
 profiles::elasticsearch::es_version: '1.7.1'
 profiles::elasticsearch::es_major_repo_version: '1.7'
-profiles::cloudera_director_client::deploy_cluster: false
-profiles::cloudera_director_client::cluster_name: 'bigdatalab-cluster'
+profiles::elasticsearch::lucene_core_version: '4.10.4'
 profiles::cloudera_director_client::instance_name_prefix: 'bigdatalab'
 profiles::cloudera_director_client::private_key_path: /home/ec2-user/.ssh/bigdatalab-key
 profiles::cloudera_director_client::instance_home_path: /home/ec2-user
@@ -24,5 +23,5 @@ profiles::cloudera_director_client::data_node_quantity_min_allowed: 3
 profiles::cloudera_director_client::data_node_instance_type: 't2.medium'
 profiles::cloudera_director_client::cloudera_manager_instance_type: 't2.large'
 profiles::cloudera_director_client::master_node_instance_type: 'm4.2xlarge'
-profiles::cloudera_director_client::aws_ami: 'ami-3218595b'
+profiles::cloudera_director_client::aws_ami: 'ami-91e416fa'
 profiles::cloudera_director_client::cluster_deployment_timeout_sec: 7200
