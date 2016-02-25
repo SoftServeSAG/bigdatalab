@@ -12,7 +12,11 @@ FORGE
     puppetlabs-ntp (4.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
     puppetlabs-stdlib (4.8.0)
-    spiette-selinux (0.5.4)
+    ghoneycutt-selinux (1.1.0)
+    maestrodev-maven (1.4.0)
+      maestrodev-wget (>= 1.7.1)
+    maestrodev-wget (1.7.1)
+    evenup-kibana (2.99.0)
 
 PATH
   remote: local_modules/cloudera_director_client
@@ -40,7 +44,8 @@ PATH
       puppetlabs-ntp (>= 4.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
       softservesag-jdk_oracle (>= 0)
-      spiette-selinux (>= 0.5)
+      ghoneycutt-selinux (>= 1.1.0)
+      evenup-kibana (>= 2.9.0)
 
 PATH
   remote: local_modules/roles
@@ -48,7 +53,22 @@ PATH
     softservesag-roles (0.1.0)
       softservesag-profiles (= 0.1.0)
 
+PATH
+  remote: local_modules/bigtop_repo
+  specs:
+    softservesag-bigtop_repo (0.1.0)
+
+PATH
+  remote: local_modules/flume
+  specs:
+    softservesag-flume (0.1.0)
+      maestrodev-maven (>= 1.4.0)
+      maestrodev-wget (>= 1.7.1)
+      softservesag-bigtop_repo (>= 0.1.0)
+
 DEPENDENCIES
+  softservesag-bigtop_repo (>= 0)
+  softservesag-flume (>= 0)
   softservesag-cloudera_director_client (>= 0)
   softservesag-jdk_oracle (>= 0)
   softservesag-log_generator (>= 0)
