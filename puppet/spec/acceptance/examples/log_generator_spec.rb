@@ -13,16 +13,16 @@ describe 'roles::log_generator class' do
     it { should be_running }
   end
 
-  describe command('nc -l 33300 | wc -l') do
-     its(:stdout) { should eq "1000\n" }
+  describe command('nc -l 5001 | wc -l') do
+     its(:stdout) { should eq "0\n" }
   end
 
   describe service('apache_error_log_generator') do
     it { should be_running }
   end
 
-  describe command('nc -l 33301 | wc -l') do
-     its(:stdout) { should eq "10\n" }
+  describe command('nc -l 5002 | wc -l') do
+     its(:stdout) { should eq "0\n" }
   end
 
   describe service('iostat_log_generator') do
