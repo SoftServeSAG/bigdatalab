@@ -22,16 +22,16 @@ class profiles::elasticsearch (
   $aws_access_key         = $profiles::common::aws_access_key
   $aws_secret_key         = $profiles::common::aws_secret_key
   $aws_region             = $profiles::common::aws_region
-  
+
   $is_aws = ($::ec2_metadata != undef)
-  $heap_size = ($::memorysize_mb/2).floor
+  $heap_size = floor(($::memorysize_mb/2))
   $instance_name = 'es-01'
 
   validate_string($cluster_name)
   validate_integer($num_nodes, undef , 0)
-  
-  $min_master_nodes = ($num_nodes/2).floor + 1
-  
+
+  $min_master_nodes = floor(($num_nodes/2)) + 1
+
   $config_common = {
     'cluster.name'                        => $cluster_name,
     'index.number_of_replicas'            => 1,
@@ -88,18 +88,18 @@ class profiles::elasticsearch (
       $config_aws_availability_zones = {}
     }
 
-    $config_cloud = $config_cloud_initial + $config_aws_groups + $config_aws_availability_zones
+    $config_cloud = merge($config_cloud_initial, $config_aws_groups, $config_aws_availability_zones)
   } else {
     $config_cloud = {
       'discovery.zen.ping.multicast.enabled' => true,
     }
   }
-  
-  class { 'elasticsearch':
+
+  class { '::elasticsearch':
     manage_repo   => true,
     repo_version  => $es_major_repo_version,
     version       => $es_version,
-    config        => $config_common + $cluster_routing + $config_cloud,
+    config        => merge($config_common, $cluster_routing, $config_cloud),
     datadir       => ['/var/lib/elasticsearch'],
     init_defaults => {
       'ES_HEAP_SIZE'      => "${heap_size}m",
@@ -108,24 +108,24 @@ class profiles::elasticsearch (
       'JAVA_HOME'         => '/usr/java/default'
     }
   }
-  
-  elasticsearch::instance { $instance_name: }
-  elasticsearch::plugin{'mobz/elasticsearch-head':
+
+  ::elasticsearch::instance { $instance_name: }
+  ::elasticsearch::plugin{'mobz/elasticsearch-head':
     module_dir => 'head',
     instances  => $instance_name
   }
-  elasticsearch::plugin{'elasticsearch/marvel/latest':
+  ::elasticsearch::plugin{'elasticsearch/marvel/latest':
     module_dir => 'marvel',
     instances  => $instance_name
   }
-  
+
 #  elasticsearch::template { 'apache-logs':
 #      file => 'puppet:///modules/profiles/elasticsearch-template.json'
 #  }
 
   if($is_aws or $force_aws_plugin) {
-    elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.5.1':
+    ::elasticsearch::plugin { 'elasticsearch/elasticsearch-cloud-aws/2.5.1':
       instances => $instance_name}
   }
-  
+
 }
