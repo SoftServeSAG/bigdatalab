@@ -4,6 +4,8 @@ variable "key_file" {}
 variable "public_key" {}
 variable "vpc_subnet_id" {}
 variable "tag_owner" {}
+variable "deploy_cluster" {}
+variable "cluster_name" {}
 
 variable "tag_app" {
   default = "bigdatalab"
@@ -16,19 +18,18 @@ variable "region" {
 }
 variable "instance_types" {
   default = {
-    log_generator = "t1.micro"
-    flume = "t1.micro"
-    kibana = "t1.micro"
-    elasticsearch = "t1.micro"
-    cloudera_director_client = "t1.micro"
-    elasticsearch_kibana = "t1.micro"
-    log_generator_flume = "t1.micro"
+    log_generator = "t2.micro"
+    flume = "t2.micro"
+    kibana = "t2.micro"
+    elasticsearch = "t2.small"
+    cloudera_director_client = "t2.small"
+    elasticsearch_kibana = "t2.small"
+    log_generator_flume = "t2.small"
   }
 }
 variable "os_versions" {
   default = {
-    default = "centos-6.5"
-    log_generator = "centos-7.0"
+    default = "centos-7.1"
   }
 }
 variable "security_group" {
@@ -43,13 +44,11 @@ variable "puppet_path" {
 
 variable "amis" { # for us-east-1 region
   default = {
-    centos-6.5 = "ami-9ade2af2" # CentOS-6.5-x86_64-PV-cloudinit
-    centos-7.0 = "ami-b2c505da" # CentOS 7.0 x86_64 with cloud-init (PV)
+    centos-7.1 = "ami-91e416fa" # CentOS 7.1 x86_64 with cloud-init (PV)
   }
 }
 variable "users" {
   default = {
-    ami-9ade2af2 = "ec2-user"
-    ami-b2c505da = "ec2-user"
+    ami-91e416fa = "ec2-user"
   }
 }
