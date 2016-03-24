@@ -130,7 +130,7 @@ resource "aws_instance" "node_log_generator" {
 
   provisioner "remote-exec" {
     inline = [
-      "export PUPPET_ROLE=log_generator",
+      "export PUPPET_ROLE=log_generator_flume_agent",
       "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
       "${var.puppet_path}/puppet/puppet.sh"
     ]
@@ -139,7 +139,7 @@ resource "aws_instance" "node_log_generator" {
   count = 1
 }
 
-resource "aws_instance" "node_flume" {
+resource "aws_instance" "flume_collector" {
   depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_flume"]
 
   ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
@@ -148,7 +148,7 @@ resource "aws_instance" "node_flume" {
   key_name = "${var.key_name}"
 
   tags = {
-    Name = "flume"
+    Name = "flume_collector"
     App = "${var.tag_app}"
     Env = "${var.tag_env}"
     Owner = "${var.tag_owner}"
@@ -240,8 +240,7 @@ resource "aws_instance" "node_elasticsearch" {
     inline = [
       "export PUPPET_ROLE=elasticsearch_kibana",
       "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
-      "${var.puppet_path}/puppet/puppet.sh",
-      "sudo systemctl restart kibana"
+      "${var.puppet_path}/puppet/puppet.sh"
     ]
   }
 
@@ -306,19 +305,19 @@ EOF
 }
 
 resource "null_resource" "null_dynamic_config_log" {
-  depends_on = ["aws_instance.node_flume"]
+  depends_on = ["aws_instance.flume_collector"]
 
   provisioner "local-exec" {
     command = <<EOF
 FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
-printf 'profiles::log_generator::flume_agent_node: '\''${aws_instance.node_flume.private_ip}'\''\n' >> $FILE_PATH
+printf 'profiles::flume_agent::flume_collector_node: '\''${aws_instance.flume_collector.private_ip}'\''\n' >> $FILE_PATH
 EOF
   }
 }
 
 resource "null_resource" "null_post_deployment" {
   depends_on = ["aws_instance.node_log_generator",
-                "aws_instance.node_flume",
+                "aws_instance.flume_collector",
                 "aws_instance.node_elasticsearch",
                 "aws_instance.cloudera_director_client"]
 
@@ -336,8 +335,8 @@ output "public_ip_node_log_generator" {
   value = "${join(",", aws_instance.node_log_generator.*.public_ip)}"
 }
 
-output "public_ip_node_flume" {
-  value = "${join(",", aws_instance.node_flume.*.public_ip)}"
+output "public_ip_flume_collector" {
+  value = "${join(",", aws_instance.flume_collector.*.public_ip)}"
 }
 
 output "public_ip_node_elasticsearch" {

@@ -203,8 +203,7 @@ resource "aws_instance" "node_elasticsearch" {
     inline = [
       "export PUPPET_ROLE=elasticsearch_kibana",
       "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
-      "${var.puppet_path}/puppet/puppet.sh",
-      "sudo systemctl restart kibana"
+      "${var.puppet_path}/puppet/puppet.sh"
     ]
   }
 
