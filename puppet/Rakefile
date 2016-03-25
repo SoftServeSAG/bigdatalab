@@ -27,6 +27,7 @@ begin
     require 'puppet-lint/tasks/puppet-lint'
     PuppetLint.configuration.pattern = "local_modules/**/*.pp"
     PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "vendor/**/*.pp"]
+    PuppetLint.configuration.disable_checks = ['80chars', 'class_inherits_from_params_class']
     task :default => [:rspec, :lint]
   end
 rescue Gem::LoadError
