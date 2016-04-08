@@ -64,7 +64,7 @@ The below diagram represents proposed logical structure of the target system bas
 ##Roadmap
 ###Components:
 - [x] LogGenerator
-- [ ] Flume
+- [x] Flume
 - [x] ElasticSearch 1.7
 - [ ] Elastic Search Automatic Schema Creation
 - [x] Cloudera Director (Hadoop Cluster Deployment)
@@ -86,9 +86,9 @@ The below diagram represents proposed logical structure of the target system bas
 - [ ] OpenStack
 
 ###Configuration Size:
-- [ ] Small
+- [x] Small
 - [x] Medium
-- [ ] Large
+- [x] Large
 
 ###Data Sources:
 - [x] Log Files (HTTP, Error)
@@ -96,7 +96,7 @@ The below diagram represents proposed logical structure of the target system bas
 - [ ] IoT
 
 ###Service Discovering:
-- [x] Buil-in DNS with hostname self-registering
+- [x] Built-in DNS with hostname self-registering
 - [ ] Consul
 
 ##Tested OS
@@ -113,7 +113,7 @@ Use below steps in order to create Big Data Lab cluster:
 
    ```
    sudo ./core-install.sh
-   ./ruby-install.sh
+   ./puppet-install.sh
    ./terraform-install.sh
    source $HOME/.bashrc
    ```
