@@ -61,7 +61,10 @@ class profiles::flume_collector inherits profiles::linux {
                                               'interceptors.host_interceptor.type' => 'org.apache.flume.interceptor.HostInterceptor$Builder',
                                               'interceptors.host_interceptor.hostHeader' => 'server_host',
                                               'interceptors.ts_interceptor.type' => 'timestamp',
-                                              'interceptors' => 'access_interceptor ts_interceptor host_interceptor',
+                                              'interceptors.geoip_interceptor.type' => 'com.softserveinc.sag.flume.interceptors.GeoIpInterceptor$Builder',
+                                              'interceptors.geoip_interceptor.max_mind_db_file_name' => '/usr/share/GeoIP/GeoLiteCity.dat',
+                                              'interceptors.geoip_interceptor.ip_field_name' => 'client_ip',
+                                              'interceptors' => 'access_interceptor ts_interceptor host_interceptor geoip_interceptor',
                                               'channels' => 'access_hdfs_channel access_elasticsearch_channel'
                                             },
                      # Describe/configure Avro source for error log
@@ -82,7 +85,10 @@ class profiles::flume_collector inherits profiles::linux {
                                               'interceptors.host_interceptor.type' => 'org.apache.flume.interceptor.HostInterceptor$Builder',
                                               'interceptors.host_interceptor.hostHeader' => 'server_host',
                                               'interceptors.ts_interceptor.type' => 'timestamp',
-                                              'interceptors' => 'error_interceptor ts_interceptor host_interceptor',
+                                              'interceptors.geoip_interceptor.type' => 'com.softserveinc.sag.flume.interceptors.GeoIpInterceptor$Builder',
+                                              'interceptors.geoip_interceptor.max_mind_db_file_name' => '/usr/share/GeoIP/GeoLiteCity.dat',
+                                              'interceptors.geoip_interceptor.ip_field_name' => 'client_ip',
+                                              'interceptors' => 'error_interceptor ts_interceptor host_interceptor geoip_interceptor',
                                               'channels' => 'error_elasticsearch_channel error_hdfs_channel'
                                             },
 
