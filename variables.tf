@@ -1,17 +1,18 @@
 variable "access_key" {}
 variable "secret_key" {}
+variable "vpc_subnet_id" {}
 variable "key_file" {}
 variable "public_key" {}
-variable "vpc_subnet_id" {}
 variable "tag_owner" {}
-variable "deploy_cluster" {}
+variable "tag_app" {}
+variable "tag_env" {}
+variable "security_group" {}
+variable "key_name" {}
 variable "cluster_name" {}
+variable "deploy_cloudera_cluster" {}
 
-variable "tag_app" {
-  default = "bigdatalab"
-}
-variable "tag_env" {
-  default = "development"
+variable "puppet_path" {
+  default = "/tmp"
 }
 variable "region" {
   default = "us-east-1"
@@ -32,16 +33,6 @@ variable "os_versions" {
     default = "centos-7.1"
   }
 }
-variable "security_group" {
-  default = "bigdatalab-group"
-}
-variable "key_name" {
-  default = "bigdatalab-key"
-}
-variable "puppet_path" {
-  default = "/tmp"
-}
-
 variable "amis" { # for us-east-1 region
   default = {
     centos-7.1 = "ami-91e416fa" # CentOS 7.1 x86_64 with cloud-init (PV)

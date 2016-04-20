@@ -111,11 +111,9 @@ class profiles::elasticsearch (
 
   ::elasticsearch::instance { $instance_name: }
   ::elasticsearch::plugin{'mobz/elasticsearch-head':
-    module_dir => 'head',
     instances  => $instance_name
   }
   ::elasticsearch::plugin{'elasticsearch/marvel/latest':
-    module_dir => 'marvel',
     instances  => $instance_name
   }
 
