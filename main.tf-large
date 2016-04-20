@@ -288,7 +288,7 @@ resource "null_resource" "null_dynamic_config_collector" {
     command = <<EOF
 HADOOP_NAMENODE=$(./bootstrap_cdh.py --cluster ${var.cluster_name} --server http://${aws_instance.cloudera_director_client.public_ip}:7189 --deploy ${var.deploy_cloudera_cluster})
 FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
-printf 'profiles::flume_collector::elasticsearch_node: '\''${aws_instance.node_elasticsearch.*.private_ip.0}'\''\n' >> $FILE_PATH
+printf 'profiles::flume_collector::elasticsearch_node: '\''${element(aws_instance.node_elasticsearch.*.private_ip, 0)}'\''\n' >> $FILE_PATH
 printf "profiles::flume_collector::hadoop_namenode: '$HADOOP_NAMENODE'\n" >> $FILE_PATH
 cat $FILE_PATH
 EOF
