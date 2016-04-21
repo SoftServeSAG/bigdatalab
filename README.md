@@ -105,6 +105,17 @@ Below is a list of client OS which can be used to deploy solution from:
 - Ubuntu 14 (64 bit)
 - OSX
 
+##Product Versions
+- Vagrant 1.8.1
+- Virtualbox 5.0.8
+- Terraform 0.6.14
+- Ruby 2.2.4 (Bundler 1.10.5)
+- Puppet 4.2.1
+- Flume ???
+- ElasticSearch 1.7.1 (Lucene Core 4.10.4)
+- Kibana T.B.D.
+- Cloudera Director 1.5.1
+
 ##Deployment Guide
 
 Use the steps below in order to create Big Data Lab cluster:
@@ -125,7 +136,7 @@ Use the steps below in order to create Big Data Lab cluster:
    ```
    1 Log Generator + Flume Agent + Flume Collector
    1 ElasticSearch + Kibana
-   1 Clodera Director
+   1 Cloudera Director
 
    Cloudera CDH Cluster:
    1 Cloudera Manager
@@ -139,7 +150,7 @@ Use the steps below in order to create Big Data Lab cluster:
    1+ Log Generator + Flume Agent
    1 Flume Collector
    1 ElasticSearch + Kibana
-   1 Clodera Director
+   1 Cloudera Director
 
    Cloudera CDH Cluster:
    1 Cloudera Manager
@@ -154,7 +165,7 @@ Use the steps below in order to create Big Data Lab cluster:
    1 Flume Collector
    2+ ElasticSearch
    1 Kibana
-   1 Clodera Director
+   1 Cloudera Director
 
    Cloudera CDH Cluster:
    1 Cloudera Manager
@@ -235,10 +246,6 @@ Use the steps below in order to create Big Data Lab cluster:
    terraform apply
    ```
 
-   If "Error launching source instance: InvalidParameterValue: Value () for
-   parameter groupId is invalid. The value cannot be empty" error appears,
-   just restart the command.
-
 10. To connect to any instance:
 
    ```
@@ -305,7 +312,7 @@ Use the steps below in order to create Big Data Lab cluster:
 
    Navigate to */flume/logs* and make sure that there is some data.
 
-### Installed Cloudera CDH Cluster Services
+### Cloudera CDH Cluster Installed Services
 
 1. Cloudera Manager
 

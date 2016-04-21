@@ -118,7 +118,7 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
   # Install Ruby
   apt-add-repository -y ppa:brightbox/ruby-ng
   apt-get -y update
-  apt-get -y install ruby2.2
+  apt-get -y install ruby2.2=2.2.4-1*
   gem install bundler -v 1.10.5
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -159,8 +159,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install rbenv ruby-build
     echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.bash_profile
     source ~/.bash_profile
-    rbenv install -v 2.2.2
-    rbenv global 2.2.2
+    rbenv install -v 2.2.4
+    rbenv global 2.2.4
   fi
   gem install bundler -v 1.10.5
 
