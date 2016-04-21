@@ -203,7 +203,7 @@ Use the steps below in order to create Big Data Lab cluster:
    security_group: Name for a new AWS Security Group ("bigdatalab-group" by default)
    key_name: Name for a new AWS Key Pair ("bigdatalab-key" by default)
    cluster_name: Name for the Cloudera cluster ("bigdatalab-cluster" by default)
-   deploy_cloudera_cluster: Whether to automatically deploy Cloudera cluster or not ("true" by default)
+   deploy_cloudera_cluster: Whether to deploy Cloudera cluster or not ("true" by default)
    ```
 
    Make sure that *security_group* and *key_name* with the specified names don't exist yet.
@@ -305,43 +305,7 @@ Use the steps below in order to create Big Data Lab cluster:
 
    Navigate to */flume/logs* and make sure that there is some data.
 
-###Manual Deployment of Cloudera CDH Cluster
-
-Follow the steps below if you don't want Cloudera CDH to be automatically deployed
-during Big Data Lab cluster deployment.
-
-1. Set *deploy_cloudera_cluster* to "false" in *terraform.tfvars* ("true" by default).
-
-2. Deploy Big Data Lab cluster using the instruction above.
-
-3. Connect to the Cloudera Director Client instance and run:
-
-T.B.D.
-
-2. Locate 'cloudera-director-cluster.conf' configuration file. (Default path is '/home/ec2-user')
-3. Go to the configuration file's directory and modify the configuration.
-
-- To validate cluster configuration run:
- ```
-  cloudera-director validate cloudera-director-cluster.conf
- ```
-
-- To create cluster run:
- ```
- cloudera-director bootstrap cloudera-director-cluster.conf
- ```
-
-- To modify cluster edit the configuration file and run:
- ```
- cloudera-director update cloudera-director-cluster.conf
- ```
-
-- To check cluster status run:
- ```
- cloudera-director status cloudera-director-cluster.conf
- ```
- 
-### Cloudera CDH Cluster Services
+### Installed Cloudera CDH Cluster Services
 
 1. Cloudera Manager
 
