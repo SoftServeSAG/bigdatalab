@@ -305,7 +305,9 @@ Use the steps below in order to create Big Data Lab cluster:
    Please note that Cloudera Manager UI may render incorrectly in FireFox.  If there is
    no data on some screen, just refresh that page.
 
-   Make sure that everything is green.
+   Make sure that everything is green.  Please note that if you use a small profile
+   with less than 3 data nodes, you will probably see some warnings related to HDFS and
+   Zookeeper services.
 
    Click "HDFS-1" in the table.  On the next screen click "NameNode Web UI".
    On the next screen click Utilities -> Browse the file system.
