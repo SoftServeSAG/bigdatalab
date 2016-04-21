@@ -37,6 +37,10 @@ if [[ $(ls /etc/*release 2>/dev/null | grep 'redhat' 2>/dev/null) != '' ]]; then
     echo 'VirtualBox is already installed'
   fi
 
+  # Install Python packages
+  pip install --upgrade pip
+  pip install -r requirements.txt
+
   # Install Ruby
   if [[ $(yum list | grep 'ruby-2.2.4-1') == '' ]]; then
     if [[ $(cat /etc/redhat-release | grep ' 7') != '' ]]; then
@@ -107,6 +111,10 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
     echo 'VirtualBox is already installed'
   fi
 
+  # Install Python packages
+  pip install --upgrade pip
+  pip install -r requirements.txt
+
   # Install Ruby
   apt-add-repository -y ppa:brightbox/ruby-ng
   apt-get -y update
@@ -139,6 +147,10 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install Caskroom/cask/virtualbox --force
     brew install Caskroom/cask/virtualbox-extension-pack --force
   fi
+
+  # Install Python packages
+  pip install --upgrade pip
+  pip install -r requirements.txt
 
   # Install Ruby
   if hash rbenv 2>/dev/null; then

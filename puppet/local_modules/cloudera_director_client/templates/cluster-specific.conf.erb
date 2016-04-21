@@ -335,6 +335,12 @@ cluster {
   #     }
   # }
 
+  configs {
+  	HDFS {
+          dfs_replication: <%= @hdfs_replication_factor %>
+        }
+  }
+
   #
   # Optional configuration for existing external database for Hive Metastore or Sentry databases
   #

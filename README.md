@@ -175,6 +175,7 @@ Use the steps below in order to create Big Data Lab cluster:
    profiles::cloudera_director_client::cloudera_manager_instance_type:  AWS instance type for Cloudera Manager
    profiles::cloudera_director_client::master_node_instance_type: AWS instance type for master node
    profiles::cloudera_director_client::cluster_deployment_timeout_sec: Cluster deployment timeout in seconds. It should be changed depending on the cluster size.
+   profiles::cloudera_director_client::hdfs_replication_factor: HDFS replication factor
    ```
 
 4. According to the chosen profile, copy *main.tf-[small|medium|large]* to *main.tf*.
@@ -299,8 +300,10 @@ Use the steps below in order to create Big Data Lab cluster:
 
    Make sure that everything is green.
 
-   Click "HDFS-1" in the table.  Make sure there is some incoming traffic on the
-   "Total Bytes Written Across DataNodes" graph.
+   Click "HDFS-1" in the table.  On the next screen click "NameNode Web UI".
+   On the next screen click Utilities -> Browse the file system.
+
+   Navigate to */flume/logs* and make sure that there is some data.
 
 ###Manual Deployment of Cloudera CDH Cluster
 

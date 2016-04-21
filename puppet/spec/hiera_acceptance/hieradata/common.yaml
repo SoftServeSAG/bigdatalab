@@ -24,3 +24,4 @@ profiles::cloudera_director_client::cloudera_manager_instance_type: 't2.large'
 profiles::cloudera_director_client::master_node_instance_type: 't2.large'
 profiles::cloudera_director_client::aws_ami: 'ami-3218595b'
 profiles::cloudera_director_client::cluster_deployment_timeout_sec: 3600
+profiles::cloudera_director_client::hdfs_replication_factor: 1

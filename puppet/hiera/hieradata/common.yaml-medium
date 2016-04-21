@@ -24,3 +24,4 @@ profiles::cloudera_director_client::data_node_instance_type: 't2.medium'
 profiles::cloudera_director_client::cloudera_manager_instance_type: 't2.large'
 profiles::cloudera_director_client::master_node_instance_type: 'm4.2xlarge'
 profiles::cloudera_director_client::cluster_deployment_timeout_sec: 7200
+profiles::cloudera_director_client::hdfs_replication_factor: 3

@@ -23,7 +23,8 @@ define cloudera_director_client::deployment (
   $master_node_instance_type,      # AWS instance type for master node
   $aws_ami,                        # AWS AMI type for all cluster nodes
   $user_home_path,                 # Home path on machine where cloudera director client deployed
-  $cluster_deployment_timeout_sec  # Cluster deployment timeout. It has to be changed depends on cluster size.
+  $cluster_deployment_timeout_sec, # Cluster deployment timeout. It has to be changed depends on cluster size.
+  $hdfs_replication_factor         # HDFS replication factor
 ) {
 
   include cloudera_director_client

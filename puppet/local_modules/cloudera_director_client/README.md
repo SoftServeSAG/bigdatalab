@@ -38,7 +38,8 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
     master_node_instance_type      => $master_node_instance_type,
     aws_ami                        => $aws_ami,
     user_home_path                 => $instance_home_path,
-    cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec
+    cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec,
+    hdfs_replication_factor        => $hdfs_replication_factor
   }
 ```
 
@@ -66,3 +67,4 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
 - **aws_ami**                        - AWS AMI type for all cluster nodes
 - **user_home_path**                 - Home path on machine where cloudera director client deployed
 - **cluster_deployment_timeout_sec** - Cluster deployment timeout in seconds. It should be changed depending on the cluster size.
+- **hdfs_replication_factor**        - HDFS replication factor
