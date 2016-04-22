@@ -7,51 +7,16 @@ FORGE
       ceritsc-yum (< 1.0.0, >= 0.9.6)
       puppetlabs-apt (< 2.0.0, >= 1.4.0)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
+    ghoneycutt-selinux (1.1.0)
+      puppetlabs-stdlib (>= 3.2.0)
+    maestrodev-maven (1.4.0)
+      maestrodev-wget (>= 1.0.0)
+    maestrodev-wget (1.7.1)
     puppetlabs-apt (1.8.0)
       puppetlabs-stdlib (>= 2.2.1)
     puppetlabs-ntp (4.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
-    puppetlabs-stdlib (4.8.0)
-    ghoneycutt-selinux (1.1.0)
-    maestrodev-maven (1.4.0)
-      maestrodev-wget (>= 1.7.1)
-    maestrodev-wget (1.7.1)
-    evenup-kibana (2.99.0)
-
-PATH
-  remote: local_modules/cloudera_director_client
-  specs:
-    softservesag-cloudera_director_client (0.1.0)
-      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-
-PATH
-  remote: local_modules/jdk_oracle
-  specs:
-    softservesag-jdk_oracle (0.1.0)
-      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-
-PATH
-  remote: local_modules/log_generator
-  specs:
-    softservesag-log_generator (0.1.0)
-      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-
-PATH
-  remote: local_modules/profiles
-  specs:
-    softservesag-profiles (0.1.0)
-      elasticsearch-elasticsearch (>= 0.9.8)
-      puppetlabs-ntp (>= 4.1.0)
-      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-      softservesag-jdk_oracle (>= 0)
-      ghoneycutt-selinux (>= 1.1.0)
-      evenup-kibana (>= 2.9.0)
-
-PATH
-  remote: local_modules/roles
-  specs:
-    softservesag-roles (0.1.0)
-      softservesag-profiles (= 0.1.0)
+    puppetlabs-stdlib (4.6.0)
 
 PATH
   remote: local_modules/bigtop_repo
@@ -59,17 +24,52 @@ PATH
     softservesag-bigtop_repo (0.1.0)
 
 PATH
+  remote: local_modules/cloudera_director_client
+  specs:
+    softservesag-cloudera_director_client (0.1.0)
+      puppetlabs-stdlib (= 4.6.0)
+
+PATH
   remote: local_modules/flume
   specs:
     softservesag-flume (0.1.0)
-      maestrodev-maven (>= 1.4.0)
-      maestrodev-wget (>= 1.7.1)
-      softservesag-bigtop_repo (>= 0.1.0)
+      maestrodev-maven (= 1.4.0)
+      maestrodev-wget (= 1.7.1)
+      puppetlabs-stdlib (= 4.6.0)
+
+PATH
+  remote: local_modules/jdk_oracle
+  specs:
+    softservesag-jdk_oracle (0.1.0)
+      puppetlabs-stdlib (= 4.6.0)
+
+PATH
+  remote: local_modules/log_generator
+  specs:
+    softservesag-log_generator (0.1.0)
+      puppetlabs-stdlib (= 4.6.0)
+
+PATH
+  remote: local_modules/profiles
+  specs:
+    softservesag-profiles (0.1.0)
+      elasticsearch-elasticsearch (= 0.9.9)
+      ghoneycutt-selinux (= 1.1.0)
+      puppetlabs-ntp (= 4.1.0)
+      puppetlabs-stdlib (= 4.6.0)
+      softservesag-jdk_oracle (>= 0)
+      softservesag-log_generator (>= 0)
+
+PATH
+  remote: local_modules/roles
+  specs:
+    softservesag-roles (0.1.0)
+      softservesag-profiles (= 0.1.0)
 
 DEPENDENCIES
   softservesag-bigtop_repo (>= 0)
-  softservesag-flume (>= 0)
   softservesag-cloudera_director_client (>= 0)
+  softservesag-flume (>= 0)
   softservesag-jdk_oracle (>= 0)
   softservesag-log_generator (>= 0)
   softservesag-profiles (>= 0)

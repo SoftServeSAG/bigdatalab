@@ -111,10 +111,10 @@ Below is a list of client OS which can be used to deploy solution from:
 - Terraform 0.6.14
 - Ruby 2.2.4 (Bundler 1.10.5)
 - Puppet 4.2.1
-- Flume ???
+- Flume 1.5.2
 - ElasticSearch 1.7.1 (Lucene Core 4.10.4)
 - Kibana T.B.D.
-- Cloudera Director 1.5.1
+- Cloudera Director 2.0.0
 
 ##Deployment Guide
 

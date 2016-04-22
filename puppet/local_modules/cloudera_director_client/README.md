@@ -19,8 +19,8 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
 ```
   cloudera_director_client::deployment { 'Test-Cluster' :
     deploy_cluster                 => true 
-    cd_version                     =>  '1.5.1',
-    redhat_version                 => '6',
+    cd_version                     => '2.0.0',
+    redhat_version                 => '7',
     instance_name_prefix           => $instance_name_prefix,    
     aws_access_key_id              => $aws_access_key,
     aws_secret_access_key          => $aws_secret_key,
@@ -47,8 +47,8 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
 
 1. ***Parameters***:
 - **deploy_cluster**                 - [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. **true** by default
-- **cd_version**                     - Cloudera Director (CD) version. (Default: 1.5.1)
-- **redhat_version**                 - CD supported RedHat or CentOS version (Default: 6)
+- **cd_version**                     - Cloudera Director (CD) version.
+- **redhat_version**                 - CD supported RedHat or CentOS version
 - **instance_name_prefix**           - Prefix that will be added to all instances names, deployed by cloudera director
 - **aws_access_key_id**              - AWS access key id
 - **aws_secret_access_key**          - AWS secret access key

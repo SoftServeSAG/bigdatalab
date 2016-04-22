@@ -3,8 +3,8 @@
 #
 define cloudera_director_client::deployment (
   $deploy_cluster = false,         # [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. true by default
-  $cd_version =  '2',          # Cloudera Director (CD) version
-  $redhat_version = '6',           # CD supported RedHat or CentOS version
+  $cd_version = '2.0.0',           # Cloudera Director (CD) version
+  $redhat_version = '7',           # CD supported RedHat or CentOS version
   $instance_name_prefix,           # Prefix that will be added by CD during instance deployment
   $aws_access_key_id,
   $aws_secret_access_key,

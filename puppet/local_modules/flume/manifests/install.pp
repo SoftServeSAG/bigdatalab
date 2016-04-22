@@ -4,7 +4,7 @@ class flume::install() {
     $heap_size = floor(($::memorysize_mb/2))
 
     package { 'flume-agent':
-        ensure  => latest,
+        ensure  => 1.5.2,
     }
 
     file { '/etc/flume/conf/flume.conf':
