@@ -82,6 +82,7 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
 
   apt-get -y install build-essential curl sqlite3 git-core unzip wget
   apt-get -y install zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev libsdl1.2debian
+  apt-get -y install ruby2.2-dev
 
   # Install Vagrant
   if [[ $(dpkg -l | egrep '^i' | egrep 'vagrant\s+1:1.8.1') == '' ]]; then
