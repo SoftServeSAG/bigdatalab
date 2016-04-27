@@ -4,7 +4,7 @@ class flume::install() {
     $heap_size = floor(($::memorysize_mb/2))
 
     package { 'flume-agent':
-        ensure  => '1.5.2',
+        ensure  => '1.5.2-1.el7.centos',
     }
 
     file { '/etc/flume/conf/flume.conf':

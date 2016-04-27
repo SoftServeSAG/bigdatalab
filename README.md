@@ -259,8 +259,7 @@ Use the steps below in order to create Big Data Lab cluster:
    First, connect to the Cloudera Director Client instance and run:
 
    ```
-   cloudera-director terminate-remote /home/ec2-user/cloudera-director-cluster.conf \
-     --lp.remote.hostAndPort=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4`:7189 \
+   sudo cloudera-director terminate-remote /home/ec2-user/cloudera-director-cluster.conf \
      --lp.remote.username=<Cloudera Director username, "admin" by default> \
      --lp.remote.password=<Cloudera Director password, "admin" by default> \
      --lp.remote.terminate.assumeYes=true
@@ -277,10 +276,11 @@ Use the steps below in order to create Big Data Lab cluster:
    Open ElasticSearch in a browser:
 
    ```
-   http://<public_ip_node_elasticsearch>:9200/_count?pretty
+   http://<public_ip_node_elasticsearch>:9200/_cat/indices?v
    ```
 
-   Make sure that *count* value is greater than 0 and increases after each refresh.
+   Make sure there is *apache-logs-<date>* index and its *docs.count* value
+   is greater than 0 and increases after each refresh.
 
    Open Cloudera Director in a browser:
 
@@ -312,7 +312,7 @@ Use the steps below in order to create Big Data Lab cluster:
    Click "HDFS-1" in the table.  On the next screen click "NameNode Web UI".
    On the next screen click Utilities -> Browse the file system.
 
-   Navigate to */flume/logs* and make sure that there is some data.
+   Navigate to */flume/logs* directory and make sure that there is some actual data.
 
 ### Cloudera CDH Cluster Installed Services
 
