@@ -259,7 +259,7 @@ Use the steps below in order to create Big Data Lab cluster:
    First, connect to the Cloudera Director Client instance and run:
 
    ```
-   sudo cloudera-director terminate-remote /home/ec2-user/cloudera-director-cluster.conf \
+   sudo cloudera-director terminate-remote ~/cloudera-director-cluster.conf \
      --lp.remote.username=<Cloudera Director username, "admin" by default> \
      --lp.remote.password=<Cloudera Director password, "admin" by default> \
      --lp.remote.terminate.assumeYes=true
