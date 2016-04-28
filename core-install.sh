@@ -38,7 +38,7 @@ if [[ $(ls /etc/*release 2>/dev/null | grep 'redhat' 2>/dev/null) != '' ]]; then
   fi
 
   # Install Python packages
-  pip2 install --upgrade pip
+  pip2 install --upgrade pip setuptools
   pip2 install -r requirements.txt
 
   # Install Ruby
@@ -81,7 +81,7 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
   fi
 
   apt-get -y install build-essential curl sqlite3 git-core unzip wget python-pip
-  apt-get -y install zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev libsdl1.2debian
+  apt-get -y install zlib1g-dev libssl-dev libreadline-dev libyaml-dev libpython2.7-dev libsqlite3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev libsdl1.2debian
   apt-get -y install ruby2.2-dev
 
   # Install Vagrant
@@ -113,7 +113,7 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
   fi
 
   # Install Python packages
-  pip2 install --upgrade pip
+  pip2 install --upgrade pip setuptools
   pip2 install -r requirements.txt
 
   # Install Ruby
@@ -150,7 +150,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   fi
 
   # Install Python packages
-  pip2 install --upgrade pip
+  pip2 install --upgrade pip setuptools
   pip2 install -r requirements.txt
 
   # Install Ruby
