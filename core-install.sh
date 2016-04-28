@@ -38,8 +38,8 @@ if [[ $(ls /etc/*release 2>/dev/null | grep 'redhat' 2>/dev/null) != '' ]]; then
   fi
 
   # Install Python packages
-  pip install --upgrade pip
-  pip install -r requirements.txt
+  pip2 install --upgrade pip
+  pip2 install -r requirements.txt
 
   # Install Ruby
   if [[ $(yum list | grep 'ruby-2.2.4-1') == '' ]]; then
@@ -80,7 +80,7 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
     apt-get -y install python-software-properties
   fi
 
-  apt-get -y install build-essential curl sqlite3 git-core unzip wget
+  apt-get -y install build-essential curl sqlite3 git-core unzip wget python-pip
   apt-get -y install zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev libsdl1.2debian
   apt-get -y install ruby2.2-dev
 
@@ -113,8 +113,8 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
   fi
 
   # Install Python packages
-  pip install --upgrade pip
-  pip install -r requirements.txt
+  pip2 install --upgrade pip
+  pip2 install -r requirements.txt
 
   # Install Ruby
   apt-add-repository -y ppa:brightbox/ruby-ng
@@ -150,8 +150,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   fi
 
   # Install Python packages
-  pip install --upgrade pip
-  pip install -r requirements.txt
+  pip2 install --upgrade pip
+  pip2 install -r requirements.txt
 
   # Install Ruby
   if hash rbenv 2>/dev/null; then
