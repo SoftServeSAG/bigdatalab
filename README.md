@@ -4,7 +4,7 @@
 - [Architecture](#architecture)
    - [Architecture Drivers](#architecture-drivers)
    - [Lambda Architecture](#lambda-architecture)
-   - [Data Flow](#data-flow)
+- [Data Flow](#data-flow)
 - [Roadmap](#roadmap)
    - [Components](#components)
    - [Client OS Support](#client-os-support)
@@ -105,9 +105,20 @@ Below is a list of client OS which can be used to deploy solution from:
 - Ubuntu 14 (64 bit)
 - OSX
 
+##Product Versions
+- Vagrant 1.8.1
+- Virtualbox 5.0.8
+- Terraform 0.6.14
+- Ruby 2.2.4 (Bundler 1.10.5)
+- Puppet 4.2.1
+- Flume 1.5.2
+- ElasticSearch 1.7.1 (Lucene Core 4.10.4)
+- Kibana T.B.D.
+- Cloudera Director 2.0.0
+
 ##Deployment Guide
-###Deploying Cluster
-Use below steps in order to create Big Data Lab cluster:
+
+Use the steps below in order to create Big Data Lab cluster:
 
 1. Run:
 
@@ -118,19 +129,97 @@ Use below steps in order to create Big Data Lab cluster:
    source $HOME/.bashrc
    ```
 
-2. Copy puppet/hiera/hieradata/common.yaml-[small|medium|large] to common.yaml.
-   Update it, if needed.
-   
-3. To turn on cluster deployment, change *'profiles::cloudera_director_client::deploy_cluster'* property in common.yaml to *true*
-   To get additional information about cluster configuration see ['cluster management'](#cloudera-cluster-management) section.
+2. Choose a profile that you want to use as a template (small, medium or large).
 
-4. Copy main.tf-[small|medium|large] to main.tf.
+   Small:
+
+   ```
+   1 Log Generator + Flume Agent + Flume Collector
+   1 ElasticSearch + Kibana
+   1 Cloudera Director
+
+   Cloudera CDH Cluster:
+   1 Cloudera Manager
+   1 Name Node
+   1+ Data Node(s)
+   ```
+
+   Medium:
+
+   ```
+   1+ Log Generator + Flume Agent
+   1 Flume Collector
+   1 ElasticSearch + Kibana
+   1 Cloudera Director
+
+   Cloudera CDH Cluster:
+   1 Cloudera Manager
+   1 Name Node
+   3+ Data Nodes
+   ```
+
+   Large:
+
+   ```
+   2+ Log Generator + Flume Agent
+   1 Flume Collector
+   2+ ElasticSearch
+   1 Kibana
+   1 Cloudera Director
+
+   Cloudera CDH Cluster:
+   1 Cloudera Manager
+   1 Name Node
+   5+ Data Nodes
+   ```
+
+3. According to the chosen profile, copy *puppet/hiera/hieradata/common.yaml-[small|medium|large]*
+   to *puppet/hiera/hieradata/common.yaml*.  Review and update its content, if needed.
+
+   Values, which may be changed:
+
+   ```
+   profiles::cloudera_director_client::root_volume_size_GB: AWS volume size to be allocated for each node. Root partition on each node will be resized accordingly.
+   profiles::cloudera_director_client::data_node_quantity: Number of cluster data nodes to be deployed on AWS
+   profiles::cloudera_director_client::data_node_quantity_min_allowed: Min number of cluster data nodes successfully deployed to AWS, otherwise the process will fail
+   profiles::cloudera_director_client::data_node_instance_type: AWS instance type for data node
+   profiles::cloudera_director_client::cloudera_manager_instance_type:  AWS instance type for Cloudera Manager
+   profiles::cloudera_director_client::master_node_instance_type: AWS instance type for master node
+   profiles::cloudera_director_client::cluster_deployment_timeout_sec: Cluster deployment timeout in seconds. It should be changed depending on the cluster size.
+   profiles::cloudera_director_client::hdfs_replication_factor: HDFS replication factor
+   ```
+
+4. According to the chosen profile, copy *main.tf-[small|medium|large]* to *main.tf*.
+   In medium and large profiles you may change the number of "node_log_generator" nodes.
+   In large profile you may also change the number of "node_elasticsearch" nodes:
+
+   ```
+   count = 1
+   ```
 
 5. Prepare .pem file to be used for SSH connections.
 
-6. Copy terraform.tfvars.stub to terraform.tfvars.  Update it with actual values.  You may also override other values from variables.tf.
+6. Copy *terraform.tfvars.stub* to *terraform.tfvars*.  Update its content with actual values.
+   You may also override other values from *variables.tf*, if needed.
 
-7. To run unit tests, go to puppet folder and run:
+   ```
+   access_key: AWS Access Key Id
+   secret_key: AWS Secret Access Key
+   vpc_subnet_id: Existing AWS Subnet Id to be used
+   key_file: Path to your .pem file
+   public_key: Content of the public key for your .pem file
+   tag_owner: "Owner" tag for instances (your name)
+   tag_app: "App" tag for instances ("bigdatalab" by default)
+   tag_env: "Env" tag for instances ("development" by default)
+   security_group: Name for a new AWS Security Group ("bigdatalab-group" by default)
+   key_name: Name for a new AWS Key Pair ("bigdatalab-key" by default)
+   cluster_name: Name for the Cloudera cluster ("bigdatalab-cluster" by default)
+   deploy_cloudera_cluster: Whether to deploy Cloudera cluster or not ("true" by default)
+   ```
+
+   Make sure that *security_group* and *key_name* with the specified names don't exist yet.
+
+7. To run unit tests, go to *puppet* folder and run:
 
    ```
    bundle exec rake prep
@@ -138,9 +227,9 @@ Use below steps in order to create Big Data Lab cluster:
    bundle exec rake clean
    ```
 
-   Unit tests are being run during each terraform apply too.
+   Please note that unit tests are automatically run during each terraform apply.
 
-8. To run acceptance tests, go to puppet folder and run:
+8. To run acceptance tests, go to *puppet* folder and run:
 
    ```
    bundle exec rake prep
@@ -148,18 +237,14 @@ Use below steps in order to create Big Data Lab cluster:
    bundle exec rake clean
    ```
 
-   Please note, that you need a physical machine to be able to run acceptance
+   Please note that you need a physical machine to be able to run acceptance
    tests.
 
-9. To create instances, run:
+9. To create the infrastructure, run:
 
    ```
    terraform apply
    ```
-
-   If "Error launching source instance: InvalidParameterValue: Value () for
-   parameter groupId is invalid. The value cannot be empty" error appears,
-   just restart the command.
 
 10. To connect to any instance:
 
@@ -167,101 +252,85 @@ Use below steps in order to create Big Data Lab cluster:
    ssh -i <your .pem file> <SSH user>@<IP address>
    ```
 
-   You can find SSH users for all AMIs in variables.tf.
+   You can find SSH users for all AMIs in *variables.tf*.
 
-11. ***Warning:*** If your turned on a cluster deployment (step #3), log to the machine where Cloudera Director Client is running and terminate the cluster with the console command:
+11. To destroy the infrastructure, you need to perform two steps:
+
+   First, connect to the Cloudera Director Client instance and run:
 
    ```
-   cloudera-director terminate {path to cluster configuration file}
+   sudo cloudera-director terminate-remote ~/cloudera-director-cluster.conf \
+     --lp.remote.username=<Cloudera Director username, "admin" by default> \
+     --lp.remote.password=<Cloudera Director password, "admin" by default> \
+     --lp.remote.terminate.assumeYes=true
    ```
-###Destroying Cluster
-To destroy Big Data Lab cluster, run following command:
 
-1. To destroy instances, run:
-     
+   When done, run locally:
+
    ```
    terraform destroy
    ```
 
-###Cloudera Cluster Deployment
+12. For a quick test you may do the following:
 
-#### Automatic Deployment
+   Open ElasticSearch in a browser:
 
-Cluster is deployed to AWS by Cloudera director client tool. It is installed to AWS instance as a 'cloudera_director_client' terraform resource.
+   ```
+   http://<public_ip_node_elasticsearch>:9200/_cat/indices?v
+   ```
 
-Before starting a deployment, cluster can be customized depending on specific needs.
-A default cluster presets were extracted to 'hiera/hieradata/common.yaml-[small|medium|large]' configuration files.
+   Make sure there is *apache-logs-<date>* index and its *docs.count* value
+   is greater than 0 and increases after each refresh.
 
-Mentioned properties described in the table below. 
+   Open Cloudera Director in a browser:
 
-Property | Description | Small | Medium | Large
----|---|---|---|---
-*profiles::cloudera_director_client ::deploy_cluster* | When false, cluster won't be deployed to AWS. Otherwise it will. Set to false if you don't want to deploy cluster and to manage it outside the project | false | false | false 
-*profiles::cloudera_director_client ::root_volume_size_GB* | Size in GB that can be allocated for each instance in the cluster | 50 | 100 | 300
-*profiles::cloudera_director_client ::data_node_quantity* | Number of instances deployed on AWS and used in data nodes roles. Minimum recommended 3 | 1 | 3 | 10  
-*profiles::cloudera_director_client ::data_node_quantity_min_allowed* | Minimal number of cluster data nodes allowed to be deployed to AWS. In case the number of instances can not be reached, cluster deployment will fail | 1 | 3 | 10
-*profiles::cloudera_director_client ::data_node_instance_type* | AWS instance type for data nodes to be deployed  | t2.medium | t2.medium | m4.xlarge
-*profiles::cloudera_director_client ::cloudera_manager_instance_type* | AWS instance type for Cloudera Manager to be deployed | t2.large | t2.large | m4.large
-*profiles::cloudera_director_client ::master_node_instance_type* | AWS instance type for master cluster services to be run on | t2.large | m4.2xlarge | m4.4xlarge 
-*profiles::cloudera_director_client ::aws_ami* | AWS image to be used for each cluster instance | ami-3218595b | ami-3218595b | ami-3218595b
-*profiles::cloudera_director_client ::cluster_deployment_timeout_sec* | Cluster deployment timeout in seconds. In order of increasing number of nodes, timeout has to be also increased | 7200 | 7200 | 7200
+   ```
+   http://<public_ip_node_cloudera_director>:7189
+   ```
 
-#### Manual Deployment and Configuration
-Follow below steps if you don't want Cloudera CDH to be automatically deployed during Big Data Lab cluster deployment:
+   Check "Yes, I accept the End User License Terms and Conditions" and click "Continue".
+   Enter Username ("admin" by default) and Password ("admin" by default)
 
-Before project deployment set *profiles::cloudera_director_client::deploy_cluster* property to *false*  (false by default)
+   Make sure that all services are "green".
 
-To manually create (or change) cluster:
-1. Connect by ssh to the resource 'cloudera_director_client' created by terraform. 
-2. Locate 'cloudera-director-cluster.conf' configuration file. (Default path is '/home/ec2-user')
-3. Go to the configuration file's directory and modify the configuration.
+   Click "bigdatalab-cluster Deployment" link in the table.  On the next screen click
+   "View Properties" and copy *Public IP* value.
 
-- To validate cluster configuration run:
- ```
-  cloudera-director validate cloudera-director-cluster.conf
- ```
+   Open Cloudera Manager in a browser:
 
-- To create cluster run:
- ```
- cloudera-director bootstrap cloudera-director-cluster.conf
- ```
+   ```
+   http://<Public IP from the last step>:7180
+   ```
 
-- To modify cluster edit the configuration file and run:
- ```
- cloudera-director update cloudera-director-cluster.conf
- ```
+   Please note that Cloudera Manager UI may render incorrectly in FireFox.  If there is
+   no data on some screen, just refresh that page.
 
-- To check cluster status run:
- ```
- cloudera-director status cloudera-director-cluster.conf
- ```
- 
-#### Cloudera Cluster Services
+   Make sure that everything is green.  Please note that if you use a small profile
+   with less than 3 data nodes, you will probably see some warnings related to HDFS and
+   Zookeeper services.
 
-1. Edge node: Cloudera Manager runs on a separate edge-node instance.
+   Click "HDFS-1" in the table.  On the next screen click "NameNode Web UI".
+   On the next screen click Utilities -> Browse the file system.
 
-2. Master node:
+   Navigate to */flume/logs* directory and make sure that there is some actual data.
+
+### Cloudera CDH Cluster Installed Services
+
+1. Cloudera Manager
+
+2. Name Node:
+
  - HDFS 
  - YARN
- - ZOOKEEPER
- - HIVE
- - HUE
- - OOZIE
- - IMPALA
+ - Zookeeper
+ - Hive
+ - Hue
+ - Oozie
+ - Impala
 
-3. Slave node(s):
+3. Data Node(s):
+
  - HDFS 
  - YARN
- - IMPALA
-
-#### Cloudera Manager UI
-
-After completion a Terraform environment applying stage, cluster can be accessed with Cloudera Manager (CM) UI.
-To open CM UI locate CM IP address in Terraform output and open the following URL in a browser:
-
-http://ClouderaManagerIP:7180
-
-To login into CM UI use: 
-- username: 'admin' 
-- password: 'admin'
+ - Impala
 

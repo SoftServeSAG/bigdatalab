@@ -19,8 +19,8 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
 ```
   cloudera_director_client::deployment { 'Test-Cluster' :
     deploy_cluster                 => true 
-    cd_version                     =>  '1.5.1',
-    redhat_version                 => '6',
+    cd_version                     => '2.0.0',
+    redhat_version                 => '7',
     instance_name_prefix           => $instance_name_prefix,    
     aws_access_key_id              => $aws_access_key,
     aws_secret_access_key          => $aws_secret_key,
@@ -38,16 +38,17 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
     master_node_instance_type      => $master_node_instance_type,
     aws_ami                        => $aws_ami,
     user_home_path                 => $instance_home_path,
-    cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec
+    cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec,
+    hdfs_replication_factor        => $hdfs_replication_factor
   }
 ```
 
 ##Reference
 
 1. ***Parameters***:
-- **deploy_cluster**                 - [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. Set to **false** by default
-- **cd_version**                     - Cloudera Director (CD) version. (Default: 1.5.1)
-- **redhat_version**                 - CD supported RedHat or CentOS version (Default: 6)
+- **deploy_cluster**                 - [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. **true** by default
+- **cd_version**                     - Cloudera Director (CD) version.
+- **redhat_version**                 - CD supported RedHat or CentOS version
 - **instance_name_prefix**           - Prefix that will be added to all instances names, deployed by cloudera director
 - **aws_access_key_id**              - AWS access key id
 - **aws_secret_access_key**          - AWS secret access key
@@ -57,12 +58,13 @@ Main goal of the module is to install *cloudera-director-client* and deploy clus
 - **aws_ssh_private_key**            - Direct path to private key on the cloudera director instance machine. 
 - **aws_tag_env**                    - AWS instance tag
 - **aws_tag_owner**                  - AWS instance tag
-- **root_volume_size_GB**            - AWS volume size has to be allocated for each cluster node. Root partition on each node will be resized accordingly
-- **data_node_quantity**             - Number of cluster data nodes deployed on AWS
-- **data_node_quantity_min_allowed** - Min number of cluster data nodes allowed to be deployed to aws. Otherwise process will fail
+- **root_volume_size_GB**            - AWS volume size to be allocated for each node. Root partition on each node will be resized accordingly.
+- **data_node_quantity**             - Number of cluster data nodes to be deployed on AWS
+- **data_node_quantity_min_allowed** - Min number of cluster data nodes successfully deployed to AWS, otherwise the process will fail
 - **data_node_instance_type**        - AWS instance type for data node
 - **cloudera_manager_instance_type** - AWS instance type for Cloudera Manager
 - **master_node_instance_type**      - AWS instance type for master node
 - **aws_ami**                        - AWS AMI type for all cluster nodes
 - **user_home_path**                 - Home path on machine where cloudera director client deployed
-- **cluster_deployment_timeout_sec** - Cluster deployment timeout in seconds. It has to be changed depends on cluster size.
+- **cluster_deployment_timeout_sec** - Cluster deployment timeout in seconds. It should be changed depending on the cluster size.
+- **hdfs_replication_factor**        - HDFS replication factor

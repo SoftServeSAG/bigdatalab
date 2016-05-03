@@ -11,7 +11,8 @@ class profiles::cloudera_director_client (
     $master_node_instance_type,
     $aws_ami,
     $instance_home_path,
-    $cluster_deployment_timeout_sec) {
+    $cluster_deployment_timeout_sec,
+    $hdfs_replication_factor) {
 
   require profiles::common
 
@@ -35,6 +36,7 @@ class profiles::cloudera_director_client (
     master_node_instance_type      => $master_node_instance_type,
     aws_ami                        => $aws_ami,
     user_home_path                 => $instance_home_path,
-    cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec
+    cluster_deployment_timeout_sec => $cluster_deployment_timeout_sec,
+    hdfs_replication_factor        => $hdfs_replication_factor
   }
 }

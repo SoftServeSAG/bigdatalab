@@ -24,7 +24,7 @@ class flume::collector($sources = [], $sinks = [], $channels = []) {
     }
 
     package { 'GeoIP':
-        ensure  => latest,
+        ensure  => '1.5.0-9.el7',
     }
 
     file { '/etc/GeoIP.conf':

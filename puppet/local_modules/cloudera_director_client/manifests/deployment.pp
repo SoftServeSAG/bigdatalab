@@ -2,9 +2,9 @@
 # Cloudera Director cluster deployment definition
 #
 define cloudera_director_client::deployment (
-  $deploy_cluster = false,         # [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. Set to false by default
-  $cd_version =  '2',          # Cloudera Director (CD) version
-  $redhat_version = '6',           # CD supported RedHat or CentOS version
+  $deploy_cluster = false,         # [true | false] If false, cluster won't be deployed to AWS. Otherwise it will. true by default
+  $cd_version = '2.0.0',           # Cloudera Director (CD) version
+  $redhat_version = '7',           # CD supported RedHat or CentOS version
   $instance_name_prefix,           # Prefix that will be added by CD during instance deployment
   $aws_access_key_id,
   $aws_secret_access_key,
@@ -23,7 +23,8 @@ define cloudera_director_client::deployment (
   $master_node_instance_type,      # AWS instance type for master node
   $aws_ami,                        # AWS AMI type for all cluster nodes
   $user_home_path,                 # Home path on machine where cloudera director client deployed
-  $cluster_deployment_timeout_sec  # Cluster deployment timeout. It has to be changed depends on cluster size.
+  $cluster_deployment_timeout_sec, # Cluster deployment timeout. It has to be changed depends on cluster size.
+  $hdfs_replication_factor         # HDFS replication factor
 ) {
 
   include cloudera_director_client
@@ -79,6 +80,6 @@ define cloudera_director_client::deployment (
       require   => File[$cloudera_director_configs_path]
     }
   } else {
-    warning('Cluster deployment is turned off by default. To deploy cluster to AWS with Cloudera Director Client set deploy_cluster parameter to true')
+    warning('Cluster deployment is turned off. To deploy cluster to AWS with Cloudera Director Client set deploy_cluster parameter to true')
   }
 }

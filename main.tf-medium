@@ -103,7 +103,7 @@ EOF
 }
 
 resource "aws_instance" "node_log_generator" {
-  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_log"]
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_agent"]
 
   ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
   instance_type = "${lookup(var.instance_types, "log_generator")}"
@@ -140,7 +140,7 @@ resource "aws_instance" "node_log_generator" {
 }
 
 resource "aws_instance" "flume_collector" {
-  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_flume"]
+  depends_on = ["null_resource.null_pre_deployment", "null_resource.null_dynamic_config_collector"]
 
   ami = "${lookup(var.amis, lookup(var.os_versions, "default"))}"
   instance_type = "${lookup(var.instance_types, "flume")}"
@@ -165,17 +165,9 @@ resource "aws_instance" "flume_collector" {
     destination = "${var.puppet_path}"
   }
 
-  # T.B.D. PoC, remove
   provisioner "remote-exec" {
     inline = [
-      "touch /tmp/elasticsearch_nodes",
-      "printf '${join("\n", aws_instance.node_elasticsearch.*.public_ip)}\n' >> /tmp/elasticsearch_nodes"
-    ]
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "export PUPPET_ROLE=flume",
+      "export PUPPET_ROLE=flume_collector",
       "sudo chmod +x ${var.puppet_path}/puppet/puppet.sh",
       "${var.puppet_path}/puppet/puppet.sh"
     ]
@@ -191,7 +183,7 @@ FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
 rm -rf $FILE_PATH
 touch $FILE_PATH
 printf 'profiles::cloudera_director_client::cluster_name: '\''${var.cluster_name}'\''\n' >> $FILE_PATH
-printf 'profiles::cloudera_director_client::deploy_cluster: ${var.deploy_cluster}\n' >> $FILE_PATH
+printf 'profiles::cloudera_director_client::deploy_cluster: ${var.deploy_cloudera_cluster}\n' >> $FILE_PATH
 printf 'profiles::common::aws_access_key: '\''${var.access_key}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_secret_key: '\''${var.secret_key}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_region: '\''${var.region}'\''\n' >> $FILE_PATH
@@ -273,7 +265,6 @@ resource "aws_instance" "cloudera_director_client" {
     destination = "${var.puppet_path}"
   }
 
-  # Copy private key to be used by Cloudera Director to deploy cluster
   provisioner "file" {
     source = "${var.key_file}"
     destination = "~/.ssh/${var.key_name}"
@@ -290,23 +281,22 @@ resource "aws_instance" "cloudera_director_client" {
   count = 1
 }
 
-resource "null_resource" "null_dynamic_config_flume" {
+resource "null_resource" "null_dynamic_config_collector" {
   depends_on = ["aws_instance.node_elasticsearch",
                 "aws_instance.cloudera_director_client"]
   provisioner "local-exec" {
     command = <<EOF
-HADOOP_NAMENODE=$(./bootstrap_cdh.py --cluster ${var.cluster_name} --server http://${aws_instance.cloudera_director_client.public_ip}:7189 --deploy ${var.deploy_cluster})
+HADOOP_NAMENODE=$(./bootstrap_cdh.py --cluster ${var.cluster_name} --server http://${aws_instance.cloudera_director_client.public_ip}:7189 --deploy ${var.deploy_cloudera_cluster})
 FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
-printf 'profiles::flume_collector::elasticsearch_node: '\''${aws_instance.node_elasticsearch.private_ip}'\''\n' >> $FILE_PATH
+printf 'profiles::flume_collector::elasticsearch_node: '\''${element(aws_instance.node_elasticsearch.*.private_ip, 0)}'\''\n' >> $FILE_PATH
 printf "profiles::flume_collector::hadoop_namenode: '$HADOOP_NAMENODE'\n" >> $FILE_PATH
 cat $FILE_PATH
 EOF
   }
 }
 
-resource "null_resource" "null_dynamic_config_log" {
+resource "null_resource" "null_dynamic_config_agent" {
   depends_on = ["aws_instance.flume_collector"]
-
   provisioner "local-exec" {
     command = <<EOF
 FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
@@ -335,7 +325,7 @@ output "public_ip_node_log_generator" {
   value = "${join(",", aws_instance.node_log_generator.*.public_ip)}"
 }
 
-output "public_ip_flume_collector" {
+output "public_ip_node_flume_collector" {
   value = "${join(",", aws_instance.flume_collector.*.public_ip)}"
 }
 

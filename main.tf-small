@@ -128,14 +128,6 @@ resource "aws_instance" "node_log_generator" {
     destination = "${var.puppet_path}"
   }
 
-  # T.B.D. PoC, remove
-  provisioner "remote-exec" {
-    inline = [
-      "touch /tmp/elasticsearch_nodes",
-      "printf '${join("\n", aws_instance.node_elasticsearch.*.public_ip)}\n' >> /tmp/elasticsearch_nodes"
-    ]
-  }
-
   provisioner "remote-exec" {
     inline = [
       "export PUPPET_ROLE=log_generator_flume",
@@ -154,7 +146,7 @@ FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
 rm -rf $FILE_PATH
 touch $FILE_PATH
 printf 'profiles::cloudera_director_client::cluster_name: '\''${var.cluster_name}'\''\n' >> $FILE_PATH
-printf 'profiles::cloudera_director_client::deploy_cluster: ${var.deploy_cluster}\n' >> $FILE_PATH
+printf 'profiles::cloudera_director_client::deploy_cluster: ${var.deploy_cloudera_cluster}\n' >> $FILE_PATH
 printf 'profiles::common::aws_access_key: '\''${var.access_key}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_secret_key: '\''${var.secret_key}'\''\n' >> $FILE_PATH
 printf 'profiles::common::aws_region: '\''${var.region}'\''\n' >> $FILE_PATH
@@ -257,9 +249,9 @@ resource "null_resource" "null_dynamic_config_flume" {
                 "aws_instance.cloudera_director_client"]
   provisioner "local-exec" {
     command = <<EOF
-HADOOP_NAMENODE=$(./bootstrap_cdh.py --cluster ${var.cluster_name} --server http://${aws_instance.cloudera_director_client.public_ip}:7189 --deploy ${var.deploy_cluster})
+HADOOP_NAMENODE=$(./bootstrap_cdh.py --cluster ${var.cluster_name} --server http://${aws_instance.cloudera_director_client.public_ip}:7189 --deploy ${var.deploy_cloudera_cluster})
 FILE_PATH=puppet/hiera/hieradata/dynamic.yaml
-printf 'profiles::flume_collector::elasticsearch_node: '\''${aws_instance.node_elasticsearch.private_ip}'\''\n' >> $FILE_PATH
+printf 'profiles::flume_collector::elasticsearch_node: '\''${element(aws_instance.node_elasticsearch.*.private_ip, 0)}'\''\n' >> $FILE_PATH
 printf "profiles::flume_collector::hadoop_namenode: '$HADOOP_NAMENODE'\n" >> $FILE_PATH
 cat $FILE_PATH
 EOF

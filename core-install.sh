@@ -37,6 +37,10 @@ if [[ $(ls /etc/*release 2>/dev/null | grep 'redhat' 2>/dev/null) != '' ]]; then
     echo 'VirtualBox is already installed'
   fi
 
+  # Install Python packages
+  pip2 install --upgrade pip setuptools
+  pip2 install -r requirements.txt
+
   # Install Ruby
   if [[ $(yum list | grep 'ruby-2.2.4-1') == '' ]]; then
     if [[ $(cat /etc/redhat-release | grep ' 7') != '' ]]; then
@@ -76,8 +80,9 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
     apt-get -y install python-software-properties
   fi
 
-  apt-get -y install build-essential curl sqlite3 git-core unzip wget
-  apt-get -y install zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev libsdl1.2debian
+  apt-get -y install build-essential curl sqlite3 git-core unzip wget python-pip
+  apt-get -y install zlib1g-dev libssl-dev libreadline-dev libyaml-dev libpython2.7-dev libsqlite3-dev libxml2-dev libxslt1-dev libcurl4-openssl-dev libffi-dev libsdl1.2debian
+  apt-get -y install ruby2.2-dev
 
   # Install Vagrant
   if [[ $(dpkg -l | egrep '^i' | egrep 'vagrant\s+1:1.8.1') == '' ]]; then
@@ -107,10 +112,14 @@ elif [[ $(ls /etc/*release 2>/dev/null | grep 'lsb' 2>/dev/null) != '' ]]; then
     echo 'VirtualBox is already installed'
   fi
 
+  # Install Python packages
+  pip2 install --upgrade pip setuptools
+  pip2 install -r requirements.txt
+
   # Install Ruby
   apt-add-repository -y ppa:brightbox/ruby-ng
   apt-get -y update
-  apt-get -y install ruby2.2
+  apt-get -y install ruby2.2=2.2.4-1*
   gem install bundler -v 1.10.5
 
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -140,6 +149,10 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install Caskroom/cask/virtualbox-extension-pack --force
   fi
 
+  # Install Python packages
+  pip2 install --upgrade pip setuptools
+  pip2 install -r requirements.txt
+
   # Install Ruby
   if hash rbenv 2>/dev/null; then
     echo "Ruby is already installed"
@@ -147,8 +160,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install rbenv ruby-build
     echo 'if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi' >> ~/.bash_profile
     source ~/.bash_profile
-    rbenv install -v 2.2.2
-    rbenv global 2.2.2
+    rbenv install -v 2.2.4
+    rbenv global 2.2.4
   fi
   gem install bundler -v 1.10.5
 
